@@ -75,3 +75,21 @@
 ![alt text](schetsen/hotspot.jpeg "Hotspots")
 ![alt text](schetsen//maps.jpeg "Map")
 ![alt text](schetsen/settings.jpeg "Settings")
+
+## Helpers
+- Apology (returned een error 400 als iemand een gebruikersfout maakt)
+- Lookup (pop-up google maps met de locatie van de hotspot)
+    - javascript realtime
+- Like (likes van een foto bijhouden in een database)
+- Follow (functie om steden te volgen, zodat deze in je tijdlijn verschijnen)
+    - @app.route("/follow")
+    - geen scherm
+
+## Plugins & frameworks
+- Google Maps
+    - https://www.google.com/maps
+- Bootstrap
+    - https://getbootstrap.com/docs/4.1/layout/overview/
+-  Giphy
+    - https://giphy.com/
+
