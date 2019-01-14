@@ -68,7 +68,10 @@
 
 ## Views
 
-
-
-
-
+![alt text](schetsen/register.jpeg "Register")
+![alt text](schetsen/login.jpeg "Login")
+![alt text](schetsen/index.jpeg "Index")
+![alt text](schetsen/profile.jpeg "Profile")
+![alt text](schetsen/hotspot.jpeg "Hotspots")
+![alt text](schetsen//maps.jpeg "Map")
+![alt text](schetsen/settings.jpeg "Settings")
