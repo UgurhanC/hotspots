@@ -164,3 +164,33 @@ def changepw():
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("changepw.html")
+
+@app.route("/changeun", methods=["GET", "POST"])
+@login_required
+def changeun():
+    return apology("todo")
+
+@app.route("/forgot", methods=["GET", "POST"])
+@login_required
+def forgot():
+    return apology("todo")
+
+@app.route("/upload", methods=["GET", "POST"])
+@login_required
+def upload():
+    return apology("todo")
+
+@app.route("/follow", methods=["GET", "POST"])
+@login_required
+def follow():
+    return apology("todo")
+
+@app.route("/like", methods=["GET", "POST"])
+@login_required
+def like():
+    return apology("todo")
+
+@app.route("/react", methods=["GET", "POST"])
+@login_required
+def react():
+    return apology("todo")
