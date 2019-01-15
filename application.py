@@ -54,68 +54,6 @@ def index():
     return render_template("index.html", stocks=stocks, cash=usd(u_cash), total=usd(totalsauce))
 
 
-@app.route("/buy", methods=["GET", "POST"])
-@login_required
-def buy():
-    """Buy shares of stock."""
-    # if user reached route via POST (as by submitting a form via POST)
-    if request.method == "POST":
-
-        purchase = request.form.get("symbol")
-        stock = lookup(request.form.get("symbol"))
-        user_id = session["user_id"]
-
-        # check whether ticker symbol is valid
-        if lookup(request.form.get("symbol")) == None:
-            return apology("invalid ticker symbol")
-
-        # make the amount input an integer
-        try:
-            amount = int(request.form.get("shares"))
-        except:
-            return apology("must be a number")
-
-        # check whether the input is a positive amount
-        if amount < 0:
-            return apology("input positive number")
-
-        price = lookup(purchase)["price"]
-
-        # calculate total price
-        total_price = stock["price"] * int(request.form.get("shares"))
-
-        sauce = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=user_id)
-
-        # check whether user has enough cash
-        if sauce[0]["cash"] >= total_price:
-            # if enough cash then buy and insert the purchase into transactions
-            db.execute("INSERT INTO transactions (u_id, symbol, amount, price, transactiontype, stockp)\
-                        VALUES (:user_id, :purchase, :amount, :price, 'bought', :stockp)", user_id=user_id, purchase=purchase, amount=int(amount), price=total_price, stockp=price)
-            # if enough cash then update the users cash
-            db.execute("UPDATE users SET cash = cash - :price WHERE id = :u_id", price=total_price, u_id=user_id)
-
-        # if he doesn't then error
-        else:
-            return apology("Insufficient funds")
-
-        return redirect(url_for("index"))
-
-    # else if user reached route via GET (as by clicking a link or via redirect)
-    else:
-        return render_template("buy.html")
-
-
-@app.route("/history")
-@login_required
-def history():
-    """Show history of transactions."""
-    # make the dict so we can display the data using Jinja
-    stocks = db.execute("SELECT symbol, amount, price, transactiontype, stockp, datetime \
-                        FROM transactions WHERE u_id=:id", id=session["user_id"])
-
-    return render_template("history.html", stocks=stocks)
-
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in."""
@@ -163,28 +101,6 @@ def logout():
     return redirect(url_for("login"))
 
 
-@app.route("/quote", methods=["GET", "POST"])
-@login_required
-def quote():
-    """Get stock quote."""
-    # if user reached route via POST (as by submitting a form via POST)
-    if request.method == "POST":
-
-        quote = lookup(request.form.get("symbol"))
-
-        # ensure user passes in symbol
-        if not request.form.get("symbol"):
-            return apology("Must provide symbol")
-
-        # ensure passed in symbol is valid
-        if not quote:
-            return apology("Symbol doesn't exist")
-
-        return render_template("quoted.html", name=quote["name"], symbol=quote["symbol"], price=usd(quote["price"]))
-    else:
-        return render_template("quote.html")
-
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user."""
@@ -225,55 +141,6 @@ def register():
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("register.html")
-
-
-@app.route("/sell", methods=["GET", "POST"])
-@login_required
-def sell():
-    """Sell shares of stock."""
-    # if user reached route via POST (as by submitting a form via POST)
-    if request.method == "POST":
-
-        symbol = request.form.get("symbol")
-        amount = int(request.form.get("shares"))
-        price = lookup(symbol)["price"]
-        user_id = session["user_id"]
-        total_price = amount * price
-
-        # ensure user passes in symbol
-        if not symbol:
-            return apology("Please enter a valid symbol")
-        # ensure passed in amount is positive
-        if amount <= 0:
-            return apology("Please enter a positive amount of shares")
-
-        # query database for total amount of shares from passed in stocksymbol
-        user_shares = db.execute("SELECT SUM(amount) as total_amount FROM transactions \
-                                  WHERE u_id=:user AND symbol=:symbol GROUP BY symbol", user=user_id, symbol=symbol)
-
-        # ensure user has enough shares
-        if user_shares[0]["total_amount"] < 1 or user_shares[0]["total_amount"] < amount:
-            return apology("Insufficient shares")
-
-        # update database if user has enough shares
-        else:
-            db.execute("INSERT INTO transactions (u_id, symbol, amount, price, transactiontype, stockp) \
-                        VALUES (:user_id, :purchase, :amount, :price, 'sold', :stockp)", user_id=session["user_id"], purchase=symbol, amount=-amount, price=-total_price, stockp=price)
-
-            db.execute("UPDATE users SET cash = cash + :total_price WHERE id=:user_id" \
-                        ,total_price = total_price, user_id = session["user_id"])
-
-        return redirect(url_for("index"))
-
-    # else if user reached route via GET (as by clicking a link or via redirect)
-    else:
-        user_id = session["user_id"]
-
-        # query database for all symbols with a positive amount of shares used for making dropdown list
-        symbolslst = db.execute("SELECT symbol FROM transactions WHERE u_id=:user \
-                                GROUP BY symbol HAVING sum(amount) > 0", user=user_id)
-
-        return render_template("sell.html", symbols=symbolslst)
 
 
 @app.route("/changepw", methods=["GET", "POST"])
