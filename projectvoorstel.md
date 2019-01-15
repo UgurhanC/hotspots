@@ -5,23 +5,23 @@
 
 ## Features:
 * Registreren
+* Inloggen
 * Accountgegevens aanpassen
 * Foto's posten
-* Gebruikers/locaties volgen
-* Foto's filteren op location
-* Locatie foto opvragen
+* Steden/Gebieden volgen
+* Steden/Gebieden opzoeken
+* Locatie foto bekijken (Google Maps)
 * Foto's liken
 * Meldingen ontvanen en bekijken
 * Hotspots in omgeving kunnen bekijken
-* Kunnen reageren op foto's
-* Gifs uploaden
+* Kunnen reageren op foto's met gifs
 
 ## Minimum viable product
 * Gebruikers kunnen foto's posten
-* Gebruikers kunnen andere gebruikers volgen
+* Gebruikers kunnen steden/gebieden volgen
 * Gebruikers kunnen foto's kunnen liken
-* Gebruikers kunnen gif's  uploaden
-* Gebruikers kunnen foto's uit de omgeving bekijken
+* Gebruikers kunnen reageren met gif's
+* Gebruikers kunnen foto's uit de omgeving opvragen en bekijken
 
 
 ## Afhankelijkheden
