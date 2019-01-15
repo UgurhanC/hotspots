@@ -1,9 +1,12 @@
 import csv
 import urllib.request
 
+from cs50 import SQL
 from flask import redirect, render_template, request, session
 from functools import wraps
+from passlib.apps import custom_app_context as pwd_context
 
+db = SQL("sqlite:///finance.db")
 
 def apology(message, code=400):
     """Renders message as an apology to user."""
@@ -112,3 +115,18 @@ def lookup(symbol):
 def usd(value):
     """Formats value as USD."""
     return f"${value:,.2f}"
+
+def inlog(username, password):
+    if not username:
+        return -1
+    if not password:
+        return -1
+
+    rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
+
+    # ensure username exists and password is correct
+    if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
+        return -1
+
+    inlog = rows[0]["id"]
+    return inlog

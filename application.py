@@ -34,24 +34,25 @@ db = SQL("sqlite:///finance.db")
 @app.route("/")
 @login_required
 def index():
-    # make dictionary with purcahse data from transactions
-    stocks = db.execute("SELECT symbol, SUM(amount) as amount, sum(price) as price \
-                        FROM transactions WHERE u_id=:id GROUP BY symbol HAVING SUM(amount) > 0", id = session["user_id"])
+    return render_template("register.html")
+    # # make dictionary with purcahse data from transactions
+    # stocks = db.execute("SELECT symbol, SUM(amount) as amount, sum(price) as price \
+    #                     FROM transactions WHERE u_id=:id GROUP BY symbol HAVING SUM(amount) > 0", id = session["user_id"])
 
-    # get the users cash from dictionary
-    u_cash = db.execute("SELECT cash FROM users WHERE id=:id", id=session["user_id"])[0]["cash"]
+    # # get the users cash from dictionary
+    # u_cash = db.execute("SELECT cash FROM users WHERE id=:id", id=session["user_id"])[0]["cash"]
 
-    # add the stockprice to the dictionary
-    for x in stocks:
-        x.update({"stockp": lookup(x["symbol"])["price"]})
+    # # add the stockprice to the dictionary
+    # for x in stocks:
+    #     x.update({"stockp": lookup(x["symbol"])["price"]})
 
-    # calculate total belongings including owned cash
-    own = 0
-    for symbol in stocks:
-        own += symbol["price"]
-    totalsauce = own + u_cash
+    # # calculate total belongings including owned cash
+    # own = 0
+    # for symbol in stocks:
+    #     own += symbol["price"]
+    # totalsauce = own + u_cash
 
-    return render_template("index.html", stocks=stocks, cash=usd(u_cash), total=usd(totalsauce))
+    # return render_template("index.html", stocks=stocks, cash=usd(u_cash), total=usd(totalsauce))
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -64,23 +65,13 @@ def login():
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
-        # ensure username was submitted
-        if not request.form.get("username"):
-            return apology("must provide username")
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-        # ensure password was submitted
-        elif not request.form.get("password"):
-            return apology("must provide password")
+        if inlog(username, password) == -1:
+            return apology("inlog failed")
 
-        # query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
-
-        # ensure username exists and password is correct
-        if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
-            return apology("invalid username and/or password")
-
-        # remember which user has logged in
-        session["user_id"] = rows[0]["id"]
+        session["user_id"] = inlog
 
         # redirect user to home page
         return redirect(url_for("index"))
