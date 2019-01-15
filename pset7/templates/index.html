@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+    <table style="width: 100%">
+        <tr>
+            <th>Stock</th>
+            <th>Price of stock</th>
+            <th>Price</th>
+            <th>Shares owned</th>
+        </tr>
+        {% for stock in stocks %}
+        <tr>
+           <td>{{stock.symbol}}</td>
+           <td>{{stock.stockp | usd}}</td>
+           <td>{{stock.price | usd}}</td>
+           <td>{{stock.amount}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Current cash: {{cash}}</h2>
+    <h2>Total belongings: {{total}}</h2>
+    <p>{{symbols}}</p>
+{% endblock %}
