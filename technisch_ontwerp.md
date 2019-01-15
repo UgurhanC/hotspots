@@ -66,6 +66,11 @@
     - met scherm
     - GET
 
+- React (reageren op foto's met gif)
+    - @app.route("/react")
+    - geen eigen scherm, maar naar gif
+    - GET & POST
+
 ## Views
 
 ![alt text](schetsen/register.jpeg "Register")
