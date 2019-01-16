@@ -28,7 +28,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
+db = SQL("sqlite:///hotspots.db")
 
 
 @app.route("/")
@@ -91,6 +91,24 @@ def logout():
     # redirect user to login form
     return redirect(url_for("login"))
 
+@app.route("/forgot", methods=["GET", "POST"])
+def forgot():
+    """forgot password."""
+
+    # if user reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # ensure email was submitted
+        if not request.form.get("email"):
+            return apology("must provide email / email adress unknown")
+
+        # redirect user to home page
+        return redirect(url_for("index"))
+
+    # else if user reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("forgot.html")
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -99,8 +117,12 @@ def register():
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
+        # ensure name was submitted
+        if not request.form.get("name"):
+            return apology("must provide name")
+
         # ensure username was submitted
-        if not request.form.get("username"):
+        elif not request.form.get("username"):
             return apology("must provide username")
 
         # ensure password was submitted
@@ -112,22 +134,26 @@ def register():
             return apology("must confirm password")
 
         # ensure password and confirmation are the same
-        if request.form.get("password") != request.form.get("confirmation"):
+        elif request.form.get("password") != request.form.get("confirmation"):
             return apology("passwords don't match")
 
-        # add username and password to database if username doesn't exist
-        result = db.execute("INSERT INTO users (username, hash) values(:username, :hash)" \
-                            ,username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
+         # ensure email was submitted
+        elif not request.form.get("email"):
+            return apology("must provide email adress")
+
+        # add name and username and password and email to database if username doesn't exist
+        result = db.execute("INSERT INTO users (name, username, hash, email) values(:name, :username, :hash, :email)" \
+                            ,name=request.form.get("name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")), email=request.form.get("email"))
 
         if not result:
             return apology("Username already in use")
 
         # remember which user has logged in
         rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
-        session["user_id"] = rows[0]["id"]
+        session["user_id"] = rows[0]["user_id"]
 
         # redirect user to index page
-        return redirect(url_for("index"))
+        return redirect(url_for("login"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
@@ -168,11 +194,6 @@ def changepw():
 @app.route("/changeun", methods=["GET", "POST"])
 @login_required
 def changeun():
-    return apology("todo")
-
-@app.route("/forgot", methods=["GET", "POST"])
-@login_required
-def forgot():
     return apology("todo")
 
 @app.route("/upload", methods=["GET", "POST"])

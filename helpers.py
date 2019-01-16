@@ -6,7 +6,7 @@ from flask import redirect, render_template, request, session
 from functools import wraps
 from passlib.apps import custom_app_context as pwd_context
 
-db = SQL("sqlite:///finance.db")
+db = SQL("sqlite:///hotspots.db")
 
 def apology(message, code=400):
     """Renders message as an apology to user."""

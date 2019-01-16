@@ -45,3 +45,34 @@ main td
     text-align: left;
 }
 
+/* Add Zoom Animation */
+.animate
+{
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom
+{
+  from {-webkit-transform: scale(0)}
+  to {-webkit-transform: scale(1)}
+}
+
+@keyframes animatezoom
+{
+  from {transform: scale(0)}
+  to {transform: scale(1)}
+}
+
+.content-area-right
+{
+  max-width: 1200px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.label-default
+{
+  background-color: #fff;
+  margin-top: 10px;
+}
