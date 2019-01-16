@@ -6,8 +6,6 @@ from flask import redirect, render_template, request, session
 from functools import wraps
 from passlib.apps import custom_app_context as pwd_context
 
-import execjs
-
 db = SQL("sqlite:///hotspots.db")
 
 def apology(message, code=400):
