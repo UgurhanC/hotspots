@@ -6,7 +6,9 @@ from flask import redirect, render_template, request, session
 from functools import wraps
 from passlib.apps import custom_app_context as pwd_context
 
-db = SQL("sqlite:///finance.db")
+import execjs
+
+db = SQL("sqlite:///hotspots.db")
 
 def apology(message, code=400):
     """Renders message as an apology to user."""
@@ -120,7 +122,7 @@ def inlog(username, password):
     if not username:
         return -1
     if not password:
-        return -1
+        return -2
 
     rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
 
@@ -130,3 +132,12 @@ def inlog(username, password):
 
     inlog = rows[0]["id"]
     return inlog
+
+
+def popw(msg):
+
+    return exacjs.eval( function error(){
+        {
+        confirm_password.setCustomValidity("Passwords Don't Match");
+        }
+        )

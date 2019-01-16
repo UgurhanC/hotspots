@@ -28,13 +28,13 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
+db = SQL("sqlite:///hotspots.db")
 
 
 @app.route("/")
 @login_required
 def index():
-    return apology("todo")
+    return render_template("register.html")
     # # make dictionary with purcahse data from transactions
     # stocks = db.execute("SELECT symbol, SUM(amount) as amount, sum(price) as price \
     #                     FROM transactions WHERE u_id=:id GROUP BY symbol HAVING SUM(amount) > 0", id = session["user_id"])
@@ -194,3 +194,29 @@ def like():
 @login_required
 def react():
     return apology("todo")
+
+@app.route("/upload", methods=["GET", "POST"])
+def upload():
+    if request.method == 'POST':
+        # First go to the "/var/www/html" directory
+        os.chdir("/pset7/pics" )
+        # Print current working directory
+        UPLOAD_FOLDER = os.getcwd()
+
+        # check if the post request has the file part
+        # GET CURRENT WORKING DIRECTORY
+        #UPLOAD_FOLDER = "/home/ubuntu/workspace/pset7/pics" #os.path.basename('pics')
+        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+        print(UPLOAD_FOLDER)
+
+        ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+        file = request.files['image']
+        f = os.path.join(UPLOAD_FOLDER, file.filename)
+
+        # add your custom code to check that the uploaded file is a valid image and not a malicious file (out-of-scope for this post)
+        file.save(f)
+        os.chdir("/pset7/pics" )
+
+        return render_template('index.html')
+    else:
+        return render_template('upload.html')
