@@ -1,17 +1,17 @@
 ## Done
 
-- Project voorstel (Gezamelijk) (11-01-19)
-- Technisch ontwerp (Gezamelijk) (14-01-19)
-- Template kiezen (Gezamelijk) (15-01-19)
+- Project voorstel (Gezamelijk)
+- Technisch ontwerp (Gezamelijk)
+- Template kiezen (Gezamelijk)
     - Finance template overgenomen
-- Login (Barbara) (15-01-19)
-- Database aangemaakt (Barbara) (15-01-19)
+- Database users aangemaakt (Barbara)
 
 ## Work in Progress
 
-- Apology / Error message (Ugurhan) (16-01-19)
-- Layout nagaan/ verbeteren (Tjerk) (16-01-19)
-- Registratie (Barbara) (16-01-19)
+- Login/Registratie (Kick)
+- Upload (Barbara)
+- Reactie (Ugurhan)
+- Like/Volgen (Tjerk)
 
 ## To-Do
 
@@ -27,3 +27,9 @@
 ## Extra's
 - Profielfoto
 - Meldingen
+
+
+## Deadlines
+Komende zondag formulier B
+Volgende week dinsdag feedback deadline
+Wachtwoord vergeten

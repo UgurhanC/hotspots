@@ -17,6 +17,7 @@
 * Kunnen reageren op foto's met gifs
 
 ## Minimum viable product
+* Gebruikers kunnen inloggen/registeren
 * Gebruikers kunnen foto's posten
 * Gebruikers kunnen steden/gebieden volgen
 * Gebruikers kunnen foto's kunnen liken
