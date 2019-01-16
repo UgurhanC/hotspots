@@ -3,6 +3,7 @@ from flask import Flask, flash, redirect, render_template, request, session, url
 from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
+import os
 
 from helpers import *
 
@@ -193,25 +194,16 @@ def react():
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
     if request.method == 'POST':
-        # First go to the "/var/www/html" directory
-        os.chdir("/pset7/pics" )
-        # Print current working directory
-        UPLOAD_FOLDER = os.getcwd()
 
-        # check if the post request has the file part
-        # GET CURRENT WORKING DIRECTORY
-        UPLOAD_FOLDER = "/home/ubuntu/workspace/pset7/pics" #os.path.basename('pics')
-        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+        UPLOAD_FOLDER = os.getcwd() + "/pics"
         print(UPLOAD_FOLDER)
-
         ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
         file = request.files['image']
         f = os.path.join(UPLOAD_FOLDER, file.filename)
+        print(f)
 
         # add your custom code to check that the uploaded file is a valid image and not a malicious file (out-of-scope for this post)
         file.save(f)
-        os.chdir("/hotspots" )
-
         return render_template('index.html')
     else:
         return render_template('upload.html')
