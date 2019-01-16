@@ -130,12 +130,3 @@ def inlog(username, password):
 
     inlog = rows[0]["id"]
     return inlog
-
-
-def popw(msg):
-
-    return exacjs.eval( function error(){
-        {
-        confirm_password.setCustomValidity("Passwords Don't Match");
-        }
-        )

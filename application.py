@@ -175,11 +175,6 @@ def changeun():
 def forgot():
     return apology("todo")
 
-@app.route("/upload", methods=["GET", "POST"])
-@login_required
-def upload():
-    return apology("todo")
-
 @app.route("/follow", methods=["GET", "POST"])
 @login_required
 def follow():
@@ -215,7 +210,7 @@ def upload():
 
         # add your custom code to check that the uploaded file is a valid image and not a malicious file (out-of-scope for this post)
         file.save(f)
-        os.chdir("/pset7/pics" )
+        os.chdir("/hotspots" )
 
         return render_template('index.html')
     else:
