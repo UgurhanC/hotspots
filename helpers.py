@@ -120,7 +120,7 @@ def inlog(username, password):
     if not username:
         return -1
     if not password:
-        return -1
+        return -2
 
     rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
 
