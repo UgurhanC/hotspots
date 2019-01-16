@@ -194,16 +194,29 @@ def react():
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
     if request.method == 'POST':
-
         UPLOAD_FOLDER = os.getcwd() + "/pics"
-        print(UPLOAD_FOLDER)
-        ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+        ALLOWED_EXTENSIONS = ['.png', '.jpg', '.jpeg']
         file = request.files['image']
         f = os.path.join(UPLOAD_FOLDER, file.filename)
-        print(f)
 
-        # add your custom code to check that the uploaded file is a valid image and not a malicious file (out-of-scope for this post)
+        extension = os.path.splitext(file.filename)[1]
+        if extension not in ALLOWED_EXTENSIONS:
+            return apology("extension not allowed")
+        if not request.form.get("location"):
+            return apology("location must be given")
+        if request.form.get("location")[0].isupper() == False:
+            return apology("no capital letter")
+        if not request.form.get("caption"):
+            db.execute("INSERT INTO photo (user_id, filename, location) VALUES (:user_id, :filename, :location)",
+               user_id='1', filename=file.filename, location=request.form.get("location"))
+        else:
+            db.execute("INSERT INTO photo (user_id, filename, location) VALUES (:user_id, :filename, :location)",
+               user_id='1', filename=file.filename, location=request.form.get("location"))
         file.save(f)
+
+        else:
+
         return render_template('index.html')
     else:
         return render_template('upload.html')
