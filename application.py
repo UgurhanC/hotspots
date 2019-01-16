@@ -34,7 +34,7 @@ db = SQL("sqlite:///finance.db")
 @app.route("/")
 @login_required
 def index():
-    return render_template("register.html")
+    return apology("todo")
     # # make dictionary with purcahse data from transactions
     # stocks = db.execute("SELECT symbol, SUM(amount) as amount, sum(price) as price \
     #                     FROM transactions WHERE u_id=:id GROUP BY symbol HAVING SUM(amount) > 0", id = session["user_id"])
