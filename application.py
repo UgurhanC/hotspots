@@ -205,7 +205,7 @@ def upload():
 
         # check if the post request has the file part
         # GET CURRENT WORKING DIRECTORY
-        #UPLOAD_FOLDER = "/home/ubuntu/workspace/pset7/pics" #os.path.basename('pics')
+        UPLOAD_FOLDER = "/home/ubuntu/workspace/pset7/pics" #os.path.basename('pics')
         app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
         print(UPLOAD_FOLDER)
 
