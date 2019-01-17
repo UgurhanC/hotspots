@@ -35,4 +35,4 @@ def like(session.user_id, action):
         session.user_id.like_photo(id)
     if action == 'unlike':
         session.user_id.unlike_photo(id)
-    return?
+    return render_template(index.html)
