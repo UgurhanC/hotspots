@@ -1,5 +1,5 @@
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory
 from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
@@ -36,7 +36,18 @@ db = SQL("sqlite:///hotspots.db")
 @app.route("/")
 @login_required
 def index():
-    return render_template("index.html")
+    following = db.execute("SELECT location FROM follows WHERE user_id=:user_id GROUP BY user_id", user_id=1)
+    follow_list = []
+    for follow in following:
+        follow_list.append(follow["location"])
+    photos = []
+    for location in follow_list:
+        photo_name = db.execute("SELECT filename FROM photo WHERE location=:location", location=location)
+        for photo in photo_name:
+            photos.append(photo["filename"])
+
+
+    return render_template("index.html", photos=photos)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -183,6 +194,17 @@ def changeun():
 @app.route("/follow", methods=["GET", "POST"])
 @login_required
 def follow():
+    if request.method == 'POST':
+        if not request.form.get("location"):
+            return apology("location must be given")
+        if request.form.get("location")[0].isupper() == False:
+            return apology("no capital letter")
+        db.execute("INSERT INTO follows (user_id, location) VALUES (:user_id, :location)",
+               user_id=1, location=request.form.get("location"))
+        return render_template("index.html")
+    else:
+        return render_template("follow.html")
+
     return apology("todo")
 
 @app.route("/like", methods=["GET", "POST"])
@@ -232,3 +254,9 @@ def upload():
         return render_template('index.html')
     else:
         return render_template('upload.html')
+
+@app.route('/uploads/<path:filename>')
+def download_file(filename):
+    path = os.getcwd() + "/pics"
+    photo_path = os.path.join(path)
+    return send_from_directory(photo_path, filename, as_attachment=True)

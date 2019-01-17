@@ -130,3 +130,4 @@ def inlog(username, password):
 
     inlog = rows[0]["user_id"]
     return inlog
+
