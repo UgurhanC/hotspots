@@ -36,7 +36,7 @@ db = SQL("sqlite:///hotspots.db")
 @app.route("/")
 @login_required
 def index():
-    following = db.execute("SELECT location FROM follows WHERE user_id=:user_id GROUP BY user_id", user_id=1)
+    following = db.execute("SELECT location FROM follows WHERE user_id=:user_id", user_id=session["user_id"])
     follow_list = []
     for follow in following:
         follow_list.append(follow["location"])
@@ -45,6 +45,8 @@ def index():
         photo_name = db.execute("SELECT filename FROM photo WHERE location=:location", location=location)
         for photo in photo_name:
             photos.append(photo["filename"])
+    print(follow_list)
+    print(photos)
 
 
     return render_template("index.html", photos=photos)
@@ -63,10 +65,7 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        if inlog(username, password) == -1:
-            return apology("inlog failed")
-
-        session["user_id"] = inlog
+        session["user_id"] = inlog(username, password)
 
         # redirect user to home page
         return redirect(url_for("index"))
@@ -212,8 +211,8 @@ def follow():
         if request.form.get("location")[0].isupper() == False:
             return apology("no capital letter")
         db.execute("INSERT INTO follows (user_id, location) VALUES (:user_id, :location)",
-               user_id=1, location=request.form.get("location"))
-        return render_template("index.html")
+               user_id=session["user_id"], location=request.form.get("location"))
+        return redirect(url_for("index"))
     else:
         return render_template("follow.html")
 
@@ -221,7 +220,7 @@ def follow():
 
 @app.route("/like/<action>", methods=["GET", "POST"])
 @login_required
-def like(session.user_id, action):
+def like(user_id, action):
     if action == 'like':
         session.user_id.like_photo(id)
     if action == 'unlike':
@@ -260,14 +259,14 @@ def upload():
 
         if not request.form.get("caption"):
             db.execute("INSERT INTO photo (user_id, filename, location) VALUES (:user_id, :filename, :location)",
-               user_id=1, filename=file.filename, location=location)
+               user_id=session["user_id"], filename=file.filename, location=location)
         else:
             db.execute("INSERT INTO photo (user_id, filename, location, caption) VALUES (:user_id, :filename, :location, :caption)",
-               user_id=1, filename=file.filename, location=location, caption=request.form.get("caption"))
+               user_id=session["user_id"], filename=file.filename, location=location, caption=request.form.get("caption"))
 
         file.save(photo)
 
-        return render_template('index.html')
+        return redirect(url_for("index"))
     else:
         return render_template('upload.html')
 

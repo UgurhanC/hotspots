@@ -118,15 +118,15 @@ def usd(value):
 
 def inlog(username, password):
     if not username:
-        return -1
+        return apology("username missing")
     if not password:
-        return -1
+        return apology("password missing")
 
     rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
 
     # ensure username exists and password is correct
     if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
-        return -1
+        return apology("username doesn't match password")
 
     inlog = rows[0]["user_id"]
     return inlog
