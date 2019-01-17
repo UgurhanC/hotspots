@@ -36,25 +36,7 @@ db = SQL("sqlite:///hotspots.db")
 @app.route("/")
 @login_required
 def index():
-    return apology("todo")
-    # # make dictionary with purcahse data from transactions
-    # stocks = db.execute("SELECT symbol, SUM(amount) as amount, sum(price) as price \
-    #                     FROM transactions WHERE u_id=:id GROUP BY symbol HAVING SUM(amount) > 0", id = session["user_id"])
-
-    # # get the users cash from dictionary
-    # u_cash = db.execute("SELECT cash FROM users WHERE id=:id", id=session["user_id"])[0]["cash"]
-
-    # # add the stockprice to the dictionary
-    # for x in stocks:
-    #     x.update({"stockp": lookup(x["symbol"])["price"]})
-
-    # # calculate total belongings including owned cash
-    # own = 0
-    # for symbol in stocks:
-    #     own += symbol["price"]
-    # totalsauce = own + u_cash
-
-    # return render_template("index.html", stocks=stocks, cash=usd(u_cash), total=usd(totalsauce))
+    return render_template("index.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
