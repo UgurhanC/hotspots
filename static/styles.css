@@ -76,3 +76,11 @@ main td
   background-color: #fff;
   margin-top: 10px;
 }
+
+.field-icon {
+  float: right;
+  margin-left: -25px;
+  margin-top: -25px;
+  position: relative;
+  z-index: 2;
+}

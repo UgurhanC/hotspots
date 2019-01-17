@@ -82,12 +82,24 @@ def forgot():
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
-        # ensure email was submitted
-        if not request.form.get("email"):
-            return apology("must provide email / email adress unknown")
+        # ensure username was submitted
+        if not request.form.get("username"):
+            return apology("must provide username")
+
+        # ensure answers are the same
+        elif request.form.get("username") != request.form.get("username2"):
+            return apology("Username unknown")
+
+        # ensure security question has been answered
+        elif not request.form.get("securityquestion"):
+            return apology("Must answer security question")
+
+        # ensure answers are the same
+        elif request.form.get("securityquestion") != request.form.get("securityquestion2"):
+            return apology("Security answers don't match")
 
         # redirect user to home page
-        return redirect(url_for("index"))
+        return redirect(url_for("changepw"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
@@ -121,13 +133,13 @@ def register():
         elif request.form.get("password") != request.form.get("confirmation"):
             return apology("passwords don't match")
 
-         # ensure email was submitted
-        elif not request.form.get("email"):
-            return apology("must provide email adress")
+        # ensure security question has been answered
+        elif not request.form.get("securityquestion"):
+            return apology("Must answer security question")
 
-        # add name and username and password and email to database if username doesn't exist
-        result = db.execute("INSERT INTO users (name, username, hash, email) values(:name, :username, :hash, :email)" \
-                            ,name=request.form.get("name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")), email=request.form.get("email"))
+        # add name and username and password and securityquestion to database if username doesn't exist
+        result = db.execute("INSERT INTO users (name, username, hash, securityquestion) values(:name, :username, :hash, :securityquestion)" \
+                            ,name=request.form.get("name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")), securityquestion=pwd_context.hash(request.form.get("securityquestion")))
 
         if not result:
             return apology("Username already in use")
@@ -169,7 +181,7 @@ def changepw():
                             ,user_id=session["user_id"], hash=pwd_context.hash(request.form.get("new_password")))
 
         # redirect user to home page
-        return redirect(url_for("index"))
+        return redirect(url_for("login"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
