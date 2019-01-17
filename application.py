@@ -185,10 +185,14 @@ def changeun():
 def follow():
     return apology("todo")
 
-@app.route("/like", methods=["GET", "POST"])
+@app.route("/like/<action>", methods=["GET", "POST"])
 @login_required
-def like():
-    return apology("todo")
+def like(session.user_id, action):
+    if action == 'like':
+        session.user_id.like_photo(id)
+    if action == 'unlike':
+        session.user_id.unlike_photo(id)
+    return render_template(index.html)
 
 @app.route("/react", methods=["GET", "POST"])
 @login_required
