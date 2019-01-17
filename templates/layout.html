@@ -38,6 +38,7 @@
                     <div class="collapse navbar-collapse" id="navbar">
                         {% if session.user_id %}
                             <ul class="nav navbar-nav">
+                                <li><a href="{{ url_for('upload') }}">Upload</a></li>
 
                             </ul>
                             <ul class="nav navbar-nav navbar-right">

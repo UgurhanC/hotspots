@@ -4,6 +4,7 @@ from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 import os
+import uuid
 
 from helpers import *
 
@@ -35,7 +36,7 @@ db = SQL("sqlite:///hotspots.db")
 @app.route("/")
 @login_required
 def index():
-    return render_template("register.html")
+    return apology("todo")
     # # make dictionary with purcahse data from transactions
     # stocks = db.execute("SELECT symbol, SUM(amount) as amount, sum(price) as price \
     #                     FROM transactions WHERE u_id=:id GROUP BY symbol HAVING SUM(amount) > 0", id = session["user_id"])
@@ -213,30 +214,38 @@ def react():
     return apology("todo")
 
 @app.route("/upload", methods=["GET", "POST"])
+@login_required
 def upload():
     if request.method == 'POST':
         UPLOAD_FOLDER = os.getcwd() + "/pics"
 
         ALLOWED_EXTENSIONS = ['.png', '.jpg', '.jpeg']
         file = request.files['image']
-        f = os.path.join(UPLOAD_FOLDER, file.filename)
 
         extension = os.path.splitext(file.filename)[1]
         if extension not in ALLOWED_EXTENSIONS:
             return apology("extension not allowed")
+
         if not request.form.get("location"):
             return apology("location must be given")
+
         if request.form.get("location")[0].isupper() == False:
             return apology("no capital letter")
+
+
+        file.filename = str(uuid.uuid4()) + extension
+        photo = os.path.join(UPLOAD_FOLDER, file.filename)
+        location = str(request.form.get("location"))
+
+
         if not request.form.get("caption"):
             db.execute("INSERT INTO photo (user_id, filename, location) VALUES (:user_id, :filename, :location)",
-               user_id='1', filename=file.filename, location=request.form.get("location"))
+               user_id=1, filename=file.filename, location=location)
         else:
-            db.execute("INSERT INTO photo (user_id, filename, location) VALUES (:user_id, :filename, :location)",
-               user_id='1', filename=file.filename, location=request.form.get("location"))
-        file.save(f)
+            db.execute("INSERT INTO photo (user_id, filename, location, caption) VALUES (:user_id, :filename, :location, :caption)",
+               user_id=1, filename=file.filename, location=location, caption=request.form.get("caption"))
 
-        else:
+        file.save(photo)
 
         return render_template('index.html')
     else:

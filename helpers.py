@@ -120,7 +120,7 @@ def inlog(username, password):
     if not username:
         return -1
     if not password:
-        return -2
+        return -1
 
     rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
 
@@ -128,5 +128,5 @@ def inlog(username, password):
     if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
         return -1
 
-    inlog = rows[0]["id"]
+    inlog = rows[0]["user_id"]
     return inlog
