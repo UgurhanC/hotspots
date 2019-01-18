@@ -5,12 +5,13 @@
 {% endblock %}
 
 {% block main %}
+<p style=float:center>
     {% for photo in photos %}
-        <div class="gallery" style=float:left>
-          <a target="_blank" href= {{ photo }}>
-            <img src={{ url_for('download_file', filename=photo ) }} alt="Can't load picture" width="380">
-          </a>
-          <div class="desc">Add a description of the image here</div>
-        </div>
+        <section id="photos">
+            <img src={{ url_for('download_file', filename=photo ) }} alt="Can't load picture" width="380" style=float:left>
+        </section>
     {% endfor %}
+
+</p>
+
 {% endblock %}

@@ -3,79 +3,60 @@
 <html lang="en">
 
     <head>
-        <title>Bootstrap Hide Show Password</title>
-    	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-
-    	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-show-password/1.0.3/bootstrap-show-password.min.js"></script>
 
         <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta -->
         <meta charset="utf-8"/>
         <meta content="initial-scale=1, width=device-width" name="viewport"/>
 
         <!-- documentation at http://getbootstrap.com/, alternative themes at https://www.bootstrapcdn.com/bootswatch/ -->
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.2.1/cyborg/bootstrap.min.css" rel="stylesheet"/>
 
         <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet"/>
+        <title>Hotspots</title>
+    	  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    	  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    	  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    	  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-show-password/1.0.3/bootstrap-show-password.min.js"></script>
 
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-        <title>C$50 Finance: {% block title %}{% endblock %}</title>
+        <title>HotSpots: {% block title %}{% endblock %}</title>
 
     </head>
 
     <body>
+    <div class = "container">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <a class="navbar-brand" href="{{ url_for('index') }}">HotSpots.</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-        <div class="container">
+        <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav mr-auto">
+          {% if session.user_id %}
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('upload') }}">Upload new photo</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('follow') }}">Follow new location</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('changepw') }}">Change password</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('changeun') }}">Change username</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Log Out</a></li>
 
-            <nav class="navbar navbar-default">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <button aria-expanded="false" class="navbar-toggle collapsed" data-target="#navbar" data-toggle="collapse" type="button">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand animate" href="{{ url_for('index') }}"><span class="black"><b>HotSpots.</b></span></a>
-                    </div>
-                    <div class="collapse navbar-collapse" id="navbar">
-                        {% if session.user_id %}
-                            <ul class="nav navbar-nav">
-                                <li><a href="{{ url_for('upload') }}">Upload</a></li>
-                                <li><a href="{{ url_for('follow') }}">Follow</a></li>
-
-                            </ul>
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a href="{{ url_for('changepw') }}">Change password</a></li>
-                                <li><a href="{{ url_for('logout') }}">Log Out</a></li>
-                            </ul>
-                        {% else %}
-                            <ul class ="nav navbar-nav navbar-right animate">
-                                <li><a href="{{ url_for('register') }}">Register</a></li>
-                                <li><a href="{{ url_for('login') }}">Log In</a></li>
-                            </ul>
-                        {% endif %}
-                    </div>
-                </div>
-            </nav>
-
-            {% if get_flashed_messages() %}
-                <header>
-                    <div class="alert alert-info" role="alert">
-                        {{ get_flashed_messages() | join(" ") }}
-                    </div>
-                </header>
-            {% endif %}
+        {% else %}
+              <li class="nav-item"><a class="nav-link"href="{{ url_for('register') }}">Register</a></li>
+              <li class="nav-item"><a class="nav-link"href="{{ url_for('login') }}">Log In</a></li>
+        {% endif %}
+        </ul>
+        </div>
+    </nav>
 
             <main>
                 {% block main %}{% endblock %}
             </main>
 
-        </div>
+    </div>
+
 
     </body>
 

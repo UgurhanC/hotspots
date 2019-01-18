@@ -20,9 +20,6 @@ if app.config["DEBUG"]:
         response.headers["Pragma"] = "no-cache"
         return response
 
-# custom filter
-app.jinja_env.filters["usd"] = usd
-
 # configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
@@ -32,22 +29,21 @@ Session(app)
 # configure CS50 Library to use SQLite database
 db = SQL("sqlite:///hotspots.db")
 
-
 @app.route("/")
 @login_required
 def index():
+
     following = db.execute("SELECT location FROM follows WHERE user_id=:user_id", user_id=session["user_id"])
     follow_list = []
+
     for follow in following:
         follow_list.append(follow["location"])
+
     photos = []
     for location in follow_list:
-        photo_name = db.execute("SELECT filename FROM photo WHERE location=:location", location=location)
+        photo_name = db.execute("SELECT filename FROM photo WHERE location=:location ORDER BY timestamp DESC", location=location)
         for photo in photo_name:
             photos.append(photo["filename"])
-    print(follow_list)
-    print(photos)
-
 
     return render_template("index.html", photos=photos)
 
@@ -65,7 +61,18 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        session["user_id"] = inlog(username, password)
+        if not username:
+            return apology("username missing")
+        elif not password:
+            return apology("password missing")
+
+        rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
+
+    # ensure username exists and password is correct
+        if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
+            return apology("username doesn't match password")
+        session["user_id"]=rows[0]["user_id"]
+
 
         # redirect user to home page
         return redirect(url_for("index"))
@@ -91,36 +98,30 @@ def forgot():
 
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-
-        # ensure username was submitted
-        if not request.form.get("username2"):
+        username_confirmation = request.form.get("username2")
+        answer_confirmation = request.form.get("securityquestion2")
+            # ensure username was submitted
+        if not username_confirmation:
             return apology("must provide username")
 
-        # ensure username exists
-        allusers = db.execute("SELECT username FROM users WHERE username = :username", username=request.form.get("username2"))
+        allusers = db.execute("SELECT username FROM users WHERE username = :username", username=username_confirmation)
         if not allusers:
             return apology("Username doesn't exist")
 
         # ensure security question has been answered
-        elif not request.form.get("securityquestion2"):
+        elif not answer_confirmation:
             return apology("Must answer security question")
 
-        # ensure answers are the same
-        temp = db.execute("SELECT securityquestion FROM users WHERE username = :username", username=request.form.get("username2"))
-        print(temp)
+        temp = db.execute("SELECT securityquestion FROM users WHERE username = :username", username=username_confirmation)
         secquestion = temp[0]['securityquestion']
-
-        # ensure password and confirmation are the same
-        if request.form.get("securityquestion2") != secquestion:
+        if answer_confirmation != secquestion:
             return apology("Security answers don't match")
 
-        # redirect user to changepw page
+        session["user_id"] = session_id(username_confirmation)
         return redirect(url_for("changepw"))
 
-    # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("forgot.html")
-
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -153,19 +154,20 @@ def register():
         elif not request.form.get("securityquestion"):
             return apology("Must answer security question")
 
+        # check if username doesn't already exists
+        if session_id(request.form.get("username")):
+            return apology("username already exists")
+
         # add name and username and password and securityquestion to database if username doesn't exist
-        result = db.execute("INSERT INTO users (name, username, hash, securityquestion) values(:name, :username, :hash, :securityquestion)" \
+        db.execute("INSERT INTO users (name, username, hash, securityquestion) values(:name, :username, :hash, :securityquestion)" \
                             ,name=request.form.get("name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")), securityquestion=request.form.get("securityquestion"))
 
-        if not result:
-            return apology("Username already in use")
-
+        ids = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
         # remember which user has logged in
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
-        session["user_id"] = rows[0]["user_id"]
+        session["user_id"] = ids[0]["user_id"]
 
         # redirect user to index page
-        return redirect(url_for("login"))
+        return redirect(url_for("index"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
@@ -193,11 +195,11 @@ def changepw():
             return apology("passwords don't match")
 
         # update database delete old hash insert new hash
-        result = db.execute("UPDATE users SET hash = :hash WHERE id=:user_id" \
+        result = db.execute("UPDATE users SET hash = :hash WHERE user_id=:user_id" \
                             ,user_id=session["user_id"], hash=pwd_context.hash(request.form.get("new_password")))
 
         # redirect user to home page
-        return redirect(url_for("login"))
+        return redirect(url_for("index"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
@@ -206,7 +208,25 @@ def changepw():
 @app.route("/changeun", methods=["GET", "POST"])
 @login_required
 def changeun():
-    return apology("todo")
+    # if user reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # ensure new username was submitted
+        if not request.form.get("new_username"):
+            return apology("must provide username")
+
+        if session_id(request.form.get("new_username")):
+            return apology("username already exists")
+
+        # update database delete old hash insert new hash
+        db.execute("UPDATE users SET username = :username WHERE user_id=:user_id", user_id=session["user_id"], username=(request.form.get("new_username")))
+
+        # redirect user to home page
+        return redirect(url_for("index"))
+
+    # else if user reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("changeun.html")
 
 @app.route("/follow", methods=["GET", "POST"])
 @login_required
@@ -221,8 +241,6 @@ def follow():
         return redirect(url_for("index"))
     else:
         return render_template("follow.html")
-
-    return apology("todo")
 
 @app.route("/like/<action>", methods=["GET", "POST"])
 @login_required
