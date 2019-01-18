@@ -93,22 +93,28 @@ def forgot():
     if request.method == "POST":
 
         # ensure username was submitted
-        if not request.form.get("username"):
+        if not request.form.get("username2"):
             return apology("must provide username")
 
-        # ensure answers are the same
-        elif request.form.get("username") != request.form.get("username2"):
-            return apology("Username unknown")
+        # ensure username exists
+        allusers = db.execute("SELECT username FROM users WHERE username = :username", username=request.form.get("username2"))
+        if not allusers:
+            return apology("Username doesn't exist")
 
         # ensure security question has been answered
-        elif not request.form.get("securityquestion"):
+        elif not request.form.get("securityquestion2"):
             return apology("Must answer security question")
 
         # ensure answers are the same
-        elif request.form.get("securityquestion") != request.form.get("securityquestion2"):
+        temp = db.execute("SELECT securityquestion FROM users WHERE username = :username", username=request.form.get("username2"))
+        print(temp)
+        secquestion = temp[0]['securityquestion']
+
+        # ensure password and confirmation are the same
+        if request.form.get("securityquestion2") != secquestion:
             return apology("Security answers don't match")
 
-        # redirect user to home page
+        # redirect user to changepw page
         return redirect(url_for("changepw"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
@@ -149,7 +155,7 @@ def register():
 
         # add name and username and password and securityquestion to database if username doesn't exist
         result = db.execute("INSERT INTO users (name, username, hash, securityquestion) values(:name, :username, :hash, :securityquestion)" \
-                            ,name=request.form.get("name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")), securityquestion=pwd_context.hash(request.form.get("securityquestion")))
+                            ,name=request.form.get("name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")), securityquestion=request.form.get("securityquestion"))
 
         if not result:
             return apology("Username already in use")
