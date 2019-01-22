@@ -13,14 +13,11 @@
 
         <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet"/>
         <title>Hotspots</title>
+
     	  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     	  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-    	  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     	  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-show-password/1.0.3/bootstrap-show-password.min.js"></script>
 
-        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
         <title>HotSpots: {% block title %}{% endblock %}</title>
 
@@ -35,19 +32,24 @@
           </button>
 
         <div class="collapse navbar-collapse" id="navbarColor02">
-        <ul class="navbar-nav mr-auto">
           {% if session.user_id %}
+            <ul class="navbar-nav mr-auto">
               <li class="nav-item"><a class="nav-link" href="{{ url_for('upload') }}">Upload new photo</a></li>
               <li class="nav-item"><a class="nav-link" href="{{ url_for('follow') }}">Follow new location</a></li>
-              <li class="nav-item"><a class="nav-link" href="{{ url_for('changepw') }}">Change password</a></li>
-              <li class="nav-item"><a class="nav-link" href="{{ url_for('changeun') }}">Change username</a></li>
-              <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Log Out</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('changepw') }}">Change password</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('changeun') }}">Change username</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Log Out</a></li>
+            </ul>
 
         {% else %}
+          <ul class="navbar-nav ml-auto">
               <li class="nav-item"><a class="nav-link"href="{{ url_for('register') }}">Register</a></li>
               <li class="nav-item"><a class="nav-link"href="{{ url_for('login') }}">Log In</a></li>
+          </ul>
         {% endif %}
-        </ul>
+
         </div>
     </nav>
 

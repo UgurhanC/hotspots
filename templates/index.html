@@ -6,11 +6,16 @@
 
 {% block main %}
 <p style=float:center>
-    {% for photo in photos %}
+    {% if photos|length > 0 %}
+        {% for photo in photos %}
         <section id="photos">
-            <img src={{ url_for('download_file', filename=photo ) }} alt="Can't load picture" width="380" style=float:left>
+            <img src={{ url_for('download_file', filename=photo ) }} alt="Can't load picture" width="370" height="280" style=float:left>
         </section>
-    {% endfor %}
+        {% endfor %}
+    {% else %}
+    You don't follow any location or the locations that you follow don't have photos uploaded.
+    {% endif %}
+
 
 </p>
 

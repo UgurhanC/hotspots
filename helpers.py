@@ -38,18 +38,17 @@ def login_required(f):
 
 def inlog(username, password):
     if not username:
-        return apology("username missing")
+        return "no_username"
     if not password:
-        return apology("password missing")
+        return "no_password"
 
     rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
 
     # ensure username exists and password is correct
     if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
-        return apology("username doesn't match password")
+        return None
 
-    inlog = rows[0]["user_id"]
-    return inlog
+    return rows[0]["user_id"]
 
 def forgotpw(username_confirmation, answer_confirmation):
     # ensure username was submitted

@@ -39,11 +39,12 @@ def index():
     for follow in following:
         follow_list.append(follow["location"])
 
+    search = "(" + str(follow_list)[1:-1] + ")"
+
     photos = []
-    for location in follow_list:
-        photo_name = db.execute("SELECT filename FROM photo WHERE location=:location ORDER BY timestamp DESC", location=location)
-        for photo in photo_name:
-            photos.append(photo["filename"])
+    photo_dict = db.execute("SELECT filename FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
+    for photo in photo_dict:
+        photos.append(photo['filename'])
 
     return render_template("index.html", photos=photos)
 
@@ -61,18 +62,17 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        if not username:
-            return apology("username missing")
-        elif not password:
+        user_id = inlog(username, password)
+
+        if user_id == "no_username":
+            return apology("username is missing")
+        elif user_id == "no_password":
             return apology("password missing")
 
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
-
-    # ensure username exists and password is correct
-        if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
+        elif not user_id:
             return apology("username doesn't match password")
-        session["user_id"]=rows[0]["user_id"]
 
+        session["user_id"]=user_id
 
         # redirect user to home page
         return redirect(url_for("index"))
@@ -234,10 +234,9 @@ def follow():
     if request.method == 'POST':
         if not request.form.get("location"):
             return apology("location must be given")
-        if request.form.get("location")[0].isupper() == False:
-            return apology("no capital letter")
+        location=request.form.get("location").lower().capitalize()
         db.execute("INSERT INTO follows (user_id, location) VALUES (:user_id, :location)",
-               user_id=session["user_id"], location=request.form.get("location"))
+               user_id=session["user_id"], location=location)
         return redirect(url_for("index"))
     else:
         return render_template("follow.html")
@@ -272,13 +271,11 @@ def upload():
         if not request.form.get("location"):
             return apology("location must be given")
 
-        if request.form.get("location")[0].isupper() == False:
-            return apology("no capital letter")
-
 
         file.filename = str(uuid.uuid4()) + extension
         photo = os.path.join(UPLOAD_FOLDER, file.filename)
-        location = str(request.form.get("location"))
+        location = str(request.form.get("location")).lower().capitalize()
+        print(location)
 
 
         if not request.form.get("caption"):
