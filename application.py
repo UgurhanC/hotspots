@@ -109,26 +109,20 @@ def forgot():
         username_confirmation = request.form.get("username2")
         answer_confirmation = request.form.get("securityquestion2")
 
-        # ensure username was submitted
-        if not username_confirmation:
-            return apology("must provide username")
+        forgot = forgotpw(username_confirmation, answer_confirmation)
 
-        # ensure username exists
-        allusers = db.execute("SELECT username FROM users WHERE username = :username", username=username_confirmation)
-        if not allusers:
+        if forgot == "no_username":
+            return apology("must provide username")
+        elif forgot == "unvalid_username":
             return apology("Username doesn't exist")
 
         # ensure security question has been answered
-        elif not answer_confirmation:
+        elif forgot == "no_security_question":
             return apology("Must answer security question")
-
-        # ensure security question was correct
-        temp = db.execute("SELECT securityquestion FROM users WHERE username = :username", username=username_confirmation)
-        secquestion = temp[0]['securityquestion']
-        if answer_confirmation != secquestion:
+        elif forgot == "no_security_question":
             return apology("Security answers don't match")
 
-        session["user_id"] = session_id(username_confirmation)
+        session["user_id"] = forgot
 
         return redirect(url_for("changepw"))
 
@@ -144,41 +138,43 @@ def register():
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
+        name = request.form.get("name")
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirmation = request.form.get("confirmation")
+        answer = request.form.get("securityquestion")
+
+        user = register_user(name, username, password, confirmation, answer)
+
         # ensure name was submitted
-        if not request.form.get("name"):
+        if user == "no_name":
             return apology("must provide name")
 
         # ensure username was submitted
-        elif not request.form.get("username"):
+        elif user == "no_username":
             return apology("must provide username")
 
         # ensure password was submitted
-        elif not request.form.get("password"):
+        elif user == "no_password":
             return apology("must provide password")
 
         # ensure confirmation was submitted
-        elif not request.form.get("confirmation"):
+        elif user == "no_confirmation":
             return apology("must confirm password")
 
         # ensure password and confirmation are the same
-        elif request.form.get("password") != request.form.get("confirmation"):
+        elif user == "no_match":
             return apology("passwords don't match")
 
         # ensure security question has been answered
-        elif not request.form.get("securityquestion"):
+        elif user == "no_answer":
             return apology("Must answer security question")
 
         # check if username doesn't already exists
-        if session_id(request.form.get("username")):
+        elif user == "username_exists":
             return apology("username already exists")
 
-        # add name and username and password and securityquestion to database if username doesn't exist
-        db.execute("INSERT INTO users (name, username, hash, securityquestion) values(:name, :username, :hash, :securityquestion)", name=request.form.get(
-                   "name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")), securityquestion=request.form.get("securityquestion"))
-
-        ids = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
-        # remember which user has logged in
-        session["user_id"] = ids[0]["user_id"]
+        session["user_id"] = user
 
         # redirect user to index page
         return redirect(url_for("index"))

@@ -8,6 +8,7 @@ from passlib.apps import custom_app_context as pwd_context
 
 db = SQL("sqlite:///hotspots.db")
 
+
 def apology(message, code=400):
     """Renders message as an apology to user."""
     def escape(s):
@@ -36,7 +37,9 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 def inlog(username, password):
+    # check if username and password are given
     if not username:
         return "no_username"
     if not password:
@@ -50,27 +53,70 @@ def inlog(username, password):
 
     return rows[0]["user_id"]
 
+
 def forgotpw(username_confirmation, answer_confirmation):
     # ensure username was submitted
     if not username_confirmation:
-        return apology("must provide username")
+        return "no_username"
 
-    allusers = db.execute("SELECT username FROM users WHERE username = :username", username=username_confirmation)
-    if not allusers:
-        return apology("Username doesn't exist")
+    # check if username exists
+    users = db.execute("SELECT username FROM users WHERE username = :username", username=username_confirmation)
+    if not users:
+        return "unvalid_username"
 
     # ensure security question has been answered
     elif not answer_confirmation:
-        return apology("Must answer security question")
+        return "no_security_question"
 
-    temp = db.execute("SELECT securityquestion FROM users WHERE username = :username", username=username_confirmation)
-    secquestion = temp[0]['securityquestion']
+    # check if the answer to the securtyquestion match
+    answer = db.execute("SELECT securityquestion FROM users WHERE username = :username", username=username_confirmation)
+    secquestion = answer[0]['securityquestion']
     if answer_confirmation != secquestion:
-        return apology("Security answers don't match")
+        return "no_match"
 
     return session_id(username_confirmation)
 
+
 def session_id(username):
+    # get the rows with the username that is given
     ids = db.execute("SELECT * FROM users WHERE username = :username", username=username)
+    # if the username exists return the session
     if len(ids) > 0:
+        return ids[0]["user_id"]
+
+def register_user(name, username, password, confirmation, answer):
+            # ensure name was submitted
+        if not name:
+            return "no_name"
+
+        # ensure username was submitted
+        elif not username:
+            return "no_username"
+
+        # ensure password was submitted
+        elif not password:
+            return "no_password"
+
+        # ensure confirmation was submitted
+        elif not confirmation:
+            return "no_confirmation"
+
+        # ensure password and confirmation are the same
+        elif password != confirmation:
+            return "no_match"
+
+        # ensure security question has been answered
+        elif not answer:
+            return "no_answer"
+
+        # check if username doesn't already exists
+        if session_id(username):
+            return "username_exists"
+
+        # add name and username and password and securityquestion to database if username doesn't exist
+        db.execute("INSERT INTO users (name, username, hash, securityquestion) values(:name, :username, :hash, :securityquestion)", name=request.form.get(
+                   "name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")), securityquestion=request.form.get("securityquestion"))
+
+        ids = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+        # remember which user has logged in
         return ids[0]["user_id"]
