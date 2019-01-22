@@ -55,18 +55,15 @@ def inlog(username, password):
 
 
 def forgotpw(username_confirmation, answer_confirmation):
-    # ensure username was submitted
-    if not username_confirmation:
-        return "no_username"
+
+    # ensure username and answer were submitted
+    if not username_confirmation or not answer_confirmation:
+        return "fields_missing"
 
     # check if username exists
     users = db.execute("SELECT username FROM users WHERE username = :username", username=username_confirmation)
     if not users:
         return "unvalid_username"
-
-    # ensure security question has been answered
-    elif not answer_confirmation:
-        return "no_security_question"
 
     # check if the answer to the securtyquestion match
     answer = db.execute("SELECT securityquestion FROM users WHERE username = :username", username=username_confirmation)
@@ -85,29 +82,13 @@ def session_id(username):
         return ids[0]["user_id"]
 
 def register_user(name, username, password, confirmation, answer):
-            # ensure name was submitted
-        if not name:
-            return "no_name"
-
-        # ensure username was submitted
-        elif not username:
-            return "no_username"
-
-        # ensure password was submitted
-        elif not password:
-            return "no_password"
-
-        # ensure confirmation was submitted
-        elif not confirmation:
-            return "no_confirmation"
+        # ensure all fields where submitted
+        if not name or not username or not password or not confirmation or not answer:
+            return "not_all_fields"
 
         # ensure password and confirmation are the same
         elif password != confirmation:
             return "no_match"
-
-        # ensure security question has been answered
-        elif not answer:
-            return "no_answer"
 
         # check if username doesn't already exists
         if session_id(username):
@@ -120,3 +101,50 @@ def register_user(name, username, password, confirmation, answer):
         ids = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
         # remember which user has logged in
         return ids[0]["user_id"]
+
+
+def change_password(new_password, confirmation):
+    # ensure all fields are submitted
+    if not new_password or not confirmation:
+        return "missing_field"
+
+    # ensure password and confirmation are the same
+    if new_password != confirmation:
+        return "no_match"
+
+    # update database delete old hash insert new hash
+    result = db.execute("UPDATE users SET hash = :hash WHERE user_id=:user_id",
+                        user_id=session["user_id"], hash=pwd_context.hash(request.form.get("new_password")))
+
+    return "password_changed"
+
+def change_username(new_username):
+    # ensure new username was submitted
+    if not new_username:
+        return "no_username"
+
+    # check if username doesn't already exists
+    if session_id(new_username):
+        return "username_exists"
+
+    # update database delete old username insert new username
+    db.execute("UPDATE users SET username = :username WHERE user_id=:user_id",
+               user_id=session["user_id"], username=(request.form.get("new_username")))
+
+    return "username_changed"
+
+
+def follow_location(location):
+
+    if not location:
+        return "no_location"
+
+    place = location.lower().capitalize()
+
+    # follow the location that was submitted
+    db.execute("INSERT INTO follows (user_id, location) VALUES (:user_id, :location)",
+                user_id=session["user_id"], location=place)
+
+    return "location_followed"
+
+

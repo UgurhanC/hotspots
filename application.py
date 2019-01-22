@@ -111,14 +111,14 @@ def forgot():
 
         forgot = forgotpw(username_confirmation, answer_confirmation)
 
-        if forgot == "no_username":
-            return apology("must provide username")
+        # check if all fields are completed
+        if forgot == "fields_missing":
+            return apology("not all fields are completed")
+
+        # check if the username is valid
         elif forgot == "unvalid_username":
             return apology("Username doesn't exist")
-
-        # ensure security question has been answered
-        elif forgot == "no_security_question":
-            return apology("Must answer security question")
+        # check if the answer to the security question match
         elif forgot == "no_security_question":
             return apology("Security answers don't match")
 
@@ -146,29 +146,13 @@ def register():
 
         user = register_user(name, username, password, confirmation, answer)
 
-        # ensure name was submitted
-        if user == "no_name":
-            return apology("must provide name")
-
-        # ensure username was submitted
-        elif user == "no_username":
-            return apology("must provide username")
-
-        # ensure password was submitted
-        elif user == "no_password":
-            return apology("must provide password")
-
-        # ensure confirmation was submitted
-        elif user == "no_confirmation":
-            return apology("must confirm password")
+        # ensure are fields are submitted
+        if user == "not_all_fields":
+            return apology("not all fields all completed")
 
         # ensure password and confirmation are the same
         elif user == "no_match":
             return apology("passwords don't match")
-
-        # ensure security question has been answered
-        elif user == "no_answer":
-            return apology("Must answer security question")
 
         # check if username doesn't already exists
         elif user == "username_exists":
@@ -192,21 +176,15 @@ def changepw():
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
-        # ensure new password was submitted
-        if not request.form.get("new_password"):
-            return apology("must provide password")
+        new_password = request.form.get("new_password")
+        confirmation = request.form.get("confirmation")
 
-        # ensure confirmation was submitted
-        elif not request.form.get("confirmation"):
-            return apology("must confirm password")
+        change_pw = change_password(new_password, confirmation)
 
-        # ensure password and confirmation are the same
-        if request.form.get("new_password") != request.form.get("confirmation"):
+        if change_pw == "missing_field":
+           return apology("not all fields are completed")
+        elif change_pw == "no_match":
             return apology("passwords don't match")
-
-        # update database delete old hash insert new hash
-        result = db.execute("UPDATE users SET hash = :hash WHERE user_id=:user_id",
-                            user_id=session["user_id"], hash=pwd_context.hash(request.form.get("new_password")))
 
         # redirect user to home page
         return redirect(url_for("index"))
@@ -222,17 +200,14 @@ def changeun():
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
-        # ensure new username was submitted
-        if not request.form.get("new_username"):
+        new_username = request.form.get("new_username")
+        change_un = change_username(new_username)
+
+        # make sure username is submitted and doesn't already exists
+        if change_un == "no_username":
             return apology("must provide username")
-
-        # check if username doesn't already exists
-        if session_id(request.form.get("new_username")):
+        elif change_un == "username_exists":
             return apology("username already exists")
-
-        # update database delete old username insert new username
-        db.execute("UPDATE users SET username = :username WHERE user_id=:user_id",
-                   user_id=session["user_id"], username=(request.form.get("new_username")))
 
         # redirect user to home page
         return redirect(url_for("index"))
@@ -248,15 +223,12 @@ def follow():
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == 'POST':
 
+        location = request.form.get("location")
+        followed_location = follow_location(location)
+
         # ensure location was submitted
-        if not request.form.get("location"):
+        if followed_location == "no_location":
             return apology("location must be given")
-
-        location = request.form.get("location").lower().capitalize()
-
-        # follow the location that was submitted
-        db.execute("INSERT INTO follows (user_id, location) VALUES (:user_id, :location)",
-                   user_id=session["user_id"], location=location)
 
         return redirect(url_for("index"))
 
