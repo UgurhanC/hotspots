@@ -8,9 +8,11 @@
 <p style=float:center>
     {% if photos|length > 0 %}
         {% for photo in photos %}
-        <section id="photos">
-            <img src={{ url_for('download_file', filename=photo ) }} alt="Can't load picture" width="370" height="280" style=float:left>
-        </section>
+        <div class=animate>
+            <section id="photos">
+                <img src={{ url_for('download_file', filename=photo ) }} alt="Can't load picture" width="370" height="280" style=float:left>
+            </section>
+        </div>
         {% endfor %}
     {% else %}
     You don't follow any location or the locations that you follow don't have photos uploaded.
