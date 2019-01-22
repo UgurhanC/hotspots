@@ -81,26 +81,27 @@ def session_id(username):
     if len(ids) > 0:
         return ids[0]["user_id"]
 
+
 def register_user(name, username, password, confirmation, answer):
-        # ensure all fields where submitted
-        if not name or not username or not password or not confirmation or not answer:
-            return "not_all_fields"
+    # ensure all fields where submitted
+    if not name or not username or not password or not confirmation or not answer:
+        return "not_all_fields"
 
-        # ensure password and confirmation are the same
-        elif password != confirmation:
-            return "no_match"
+    # ensure password and confirmation are the same
+    elif password != confirmation:
+        return "no_match"
 
-        # check if username doesn't already exists
-        if session_id(username):
-            return "username_exists"
+    # check if username doesn't already exists
+    if session_id(username):
+        return "username_exists"
 
-        # add name and username and password and securityquestion to database if username doesn't exist
-        db.execute("INSERT INTO users (name, username, hash, securityquestion) values(:name, :username, :hash, :securityquestion)", name=request.form.get(
-                   "name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")), securityquestion=request.form.get("securityquestion"))
+    # add name and username and password and securityquestion to database if username doesn't exist
+    db.execute("INSERT INTO users (name, username, hash, securityquestion) values(:name, :username, :hash, :securityquestion)", name=request.form.get(
+               "name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")), securityquestion=request.form.get("securityquestion"))
 
-        ids = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
-        # remember which user has logged in
-        return ids[0]["user_id"]
+    ids = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+    # remember which user has logged in
+    return ids[0]["user_id"]
 
 
 def change_password(new_password, confirmation):
@@ -117,6 +118,7 @@ def change_password(new_password, confirmation):
                         user_id=session["user_id"], hash=pwd_context.hash(request.form.get("new_password")))
 
     return "password_changed"
+
 
 def change_username(new_username):
     # ensure new username was submitted
@@ -135,7 +137,7 @@ def change_username(new_username):
 
 
 def follow_location(location):
-
+    # check if location was submitted
     if not location:
         return "no_location"
 
@@ -143,8 +145,6 @@ def follow_location(location):
 
     # follow the location that was submitted
     db.execute("INSERT INTO follows (user_id, location) VALUES (:user_id, :location)",
-                user_id=session["user_id"], location=place)
+               user_id=session["user_id"], location=place)
 
     return "location_followed"
-
-

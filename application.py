@@ -181,8 +181,10 @@ def changepw():
 
         change_pw = change_password(new_password, confirmation)
 
+        # ensure all fields are submitted
         if change_pw == "missing_field":
-           return apology("not all fields are completed")
+            return apology("not all fields are completed")
+        # ensure passwords match
         elif change_pw == "no_match":
             return apology("passwords don't match")
 
