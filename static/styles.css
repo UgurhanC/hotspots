@@ -6,23 +6,6 @@
     text-align: center;
 }
 
-/* colors for navbar */
-.navbar-default .navbar-brand .blue
-{
-    color: #537fbe;
-}
-.navbar-default .navbar-brand .red
-{
-    color: #ea433b;
-}
-.navbar-default .navbar-brand .yellow
-{
-    color: #f5b82e;
-}
-.navbar-default .navbar-brand .green
-{
-    color: #2e944b;
-}
 
 main .form-control
 {
@@ -136,4 +119,58 @@ input[type=submit] {
 
 div:empty {
   display:none;
+}
+
+
+/* Add Zoom Animation */
+.animate
+{
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom
+{
+  from {-webkit-transform: scale(0)}
+  to {-webkit-transform: scale(1)}
+}
+
+@keyframes animatezoom
+{
+  from {transform: scale(0)}
+  to {transform: scale(1)}
+}
+
+.content-area-right
+{
+  max-width: 1200px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.label-default
+{
+  background-color: #fff;
+  margin-top: 10px;
+}
+
+.form-control {
+  margin: auto;
+  display: block;
+}
+
+body {background-color : black }
+.form-control {
+  width : 160px !important;
+  margin: auto !important;
+}
+.input-group, .form-control {
+    float: none !important;
+}
+.input-group-addon, .input-group-btn {
+display: initial !important;
+}
+
+.space {
+  margin-top: 80px;
 }

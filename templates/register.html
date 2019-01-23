@@ -7,6 +7,9 @@
 {% block main %}
     <form action="{{ url_for('register') }}" method="post">
         <fieldset>
+             <div class="form-group">
+                <input autocomplete="off" autofocus class="form-control" name="name" placeholder="Name" type="text"/>
+            </div>
             <div class="form-group">
                 <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text"/>
             </div>
@@ -15,6 +18,10 @@
             </div>
             <div class="form-group">
                 <input class="form-control" name="confirmation" placeholder="Password (again)" type="password"/>
+            </div>
+            <p><font color="grey"> Please remember your answer on the following question.</font></p>
+            <div class="form-group">
+                <input class="form-control" name="securityquestion" placeholder="Name favorite Artist" type="text"/>
             </div>
             <div class="form-group">
                 <button class="btn btn-default" type="submit">Register</button>
