@@ -196,11 +196,9 @@ def upload():
     if request.method == 'POST':
 
         UPLOAD_FOLDER = os.getcwd() + "/pics"
-        print(UPLOAD_FOLDER)
         ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
         file = request.files['image']
         f = os.path.join(UPLOAD_FOLDER, file.filename)
-        print(f)
 
         # add your custom code to check that the uploaded file is a valid image and not a malicious file (out-of-scope for this post)
         file.save(f)
