@@ -10,8 +10,9 @@
         {% for photo in photos %}
         <div class=animate>
             <section id="photos">
-                <img src={{ url_for('download_file', filename=photo ) }} alt="Can't load picture" width="370" height="280" style=float:left>
+                <img src={{ url_for('download_file', filename=photo[0] ) }} alt="Can't load picture" width="370" height="280" style=float:left>
             </section>
+            <button type="button" onclick="like_photo({{photo[1]}})">Like</button>
         </div>
         {% endfor %}
     {% else %}

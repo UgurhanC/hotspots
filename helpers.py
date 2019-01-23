@@ -148,3 +148,18 @@ def follow_location(location):
                user_id=session["user_id"], location=place)
 
     return "location_followed"
+
+def like_photo(user_id, id):
+    if is_liking_post(user_id, id) == True:
+        db.execute("INSERT INTO liked (user_id, id) VALUES (:user_id, :id)",
+            user_id=user_id, id=id)
+    elif is_liking_post(user_id, id) == False:
+        db.execute("DELETE FROM liked WHERE user_id=:user_id and id=:id",
+            user_id=user_id, id=id)
+
+def is_liking_post(user_id, id):
+    like_status = db.execute("SELECT user_id FROM liked WHERE id=:id", id=id)
+    if {'user_id': user_id} in like_status:
+        return False
+    else:
+        return True

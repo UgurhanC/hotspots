@@ -5,6 +5,7 @@ from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 import os
 import uuid
+import requests
 
 from helpers import *
 
@@ -45,9 +46,9 @@ def index():
 
     # make a list of photos of the followed locations and order by timestamp
     photos = []
-    photo_dict = db.execute("SELECT filename FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
+    photo_dict = db.execute("SELECT filename, id FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
     for photo in photo_dict:
-        photos.append(photo['filename'])
+        photos.append([photo["filename"], photo["id"]])
 
     return render_template("index.html", photos=photos)
 
@@ -239,16 +240,6 @@ def follow():
         return render_template("follow.html")
 
 
-@app.route("/like/<action>", methods=["GET", "POST"])
-@login_required
-def like(user_id, action):
-    if action == 'like':
-        session.user_id.like_photo(id)
-    if action == 'unlike':
-        session.user_id.unlike_photo(id)
-    return render_template(index.html)
-
-
 @app.route("/react", methods=["GET", "POST"])
 @login_required
 def react():
@@ -306,3 +297,12 @@ def download_file(filename):
     path = os.getcwd() + "/pics"
     photo_path = os.path.join(path)
     return send_from_directory(photo_path, filename, as_attachment=True)
+
+
+@app.route("/like", methods=["POST"])
+@login_required
+def like():
+    if request.method == "POST":
+        photo_id = request.form['id']
+        like_photo(session["user_id"], photo_id)
+        return ""
