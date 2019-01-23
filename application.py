@@ -38,7 +38,7 @@ db = SQL("sqlite:///hotspots.db")
 
 
 @app.route("/")
-#@login_required
+@login_required
 def index():
 
     # check which locations are followed
