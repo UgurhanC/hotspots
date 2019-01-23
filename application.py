@@ -1,14 +1,20 @@
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
+from flask_cors import CORS
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 import os
-
+import pandas as pd
 from helpers import *
-
+import json
+#print(json.dumps(data, sort_keys=True, indent=4))
 # configure application
 app = Flask(__name__)
+CORS(app)
+
+
+
 
 # ensure responses aren't cached
 if app.config["DEBUG"]:
@@ -33,9 +39,18 @@ db = SQL("sqlite:///hotspots.db")
 
 
 @app.route("/")
-@login_required
+#@login_required
 def index():
-    return render_template("register.html")
+    df = pd.read_excel('worldcities.xlsx', sheet_name=0) # can also index sheet by name or fetch all sheets
+    mylist = df['city'].tolist()
+    #dra = json.dumps(mylist)
+
+    if request.method == "POST":
+        return render_template("index.html")
+    else:
+       # print(citylist())
+        return render_template("index.html", countries=mylist)
+
     # # make dictionary with purcahse data from transactions
     # stocks = db.execute("SELECT symbol, SUM(amount) as amount, sum(price) as price \
     #                     FROM transactions WHERE u_id=:id GROUP BY symbol HAVING SUM(amount) > 0", id = session["user_id"])
@@ -196,6 +211,7 @@ def upload():
     if request.method == 'POST':
 
         UPLOAD_FOLDER = os.getcwd() + "/pics"
+        print(UPLOAD_FOLDER)
         ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
         file = request.files['image']
         f = os.path.join(UPLOAD_FOLDER, file.filename)
@@ -205,3 +221,39 @@ def upload():
         return render_template('index.html')
     else:
         return render_template('upload.html')
+
+@app.route("/giphy", methods=["GET", "POST"])
+def giphy():
+    if request.method == 'POST':
+
+        q = request.form.get("q")
+        print(q)
+        return render_template('index.html')
+    else:
+        return render_template('giphy.html')
+
+@app.route("/indexgoed")
+#@login_required
+def indexgoed():
+    df = pd.read_excel('worldcities.xlsx', sheet_name=0) # can also index sheet by name or fetch all sheets
+    mylist = df['city_ascii'].tolist()
+    #mylist = json.dumps(mylist)
+
+    if request.method == "POST":
+        return render_template("indexgoed.html")
+    else:
+       # print(citylist())
+        return render_template("indexgoed.html", mylist=mylist)
+
+@app.route("/tstgif", methods=["GET", "POST"])
+def tstgif():
+    if request.method == 'POST':
+
+        url = request.get_json()
+        link = url['link']
+        print(link)
+        db.execute("INSERT INTO comment (c_url) VALUES (:link)", link = link)
+        return render_template('tstgif.html')
+    else:
+        print(request.endpoint)
+        return render_template('tstgif.html')
