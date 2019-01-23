@@ -163,3 +163,14 @@ def is_liking_post(user_id, id):
         return False
     else:
         return True
+
+def photo_in_db(filename, location, caption):
+        # upload filename to database without caption
+        if not caption:
+            db.execute("INSERT INTO photo (user_id, filename, location) VALUES (:user_id, :filename, :location)",
+                       user_id=session["user_id"], filename=filename, location=location)
+
+        # upload filename with caption
+        else:
+            db.execute("INSERT INTO photo (user_id, filename, location, caption) VALUES (:user_id, :filename, :location, :caption)",
+                       user_id=session["user_id"], filename=filename, location=location, caption=caption)

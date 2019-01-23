@@ -253,14 +253,14 @@ def upload():
     if request.method == 'POST':
 
         # go to the folder with the pictures
-        UPLOAD_FOLDER = os.getcwd() + "/pics"
+        folder = os.getcwd() + "/pics"
 
-        ALLOWED_EXTENSIONS = ['.png', '.jpg', '.jpeg']
+        allowed_extensions = ['.png', '.jpg', '.jpeg']
         file = request.files['image']
         extension = os.path.splitext(file.filename)[1]
 
         # check if an image is uploaded
-        if extension not in ALLOWED_EXTENSIONS:
+        if extension not in allowed_extensions:
             return apology("extension not allowed")
 
         # ensure location was submitted
@@ -269,18 +269,10 @@ def upload():
 
         # give every image a unique name
         file.filename = str(uuid.uuid4()) + extension
-        photo = os.path.join(UPLOAD_FOLDER, file.filename)
+        photo = os.path.join(folder, file.filename)
         location = str(request.form.get("location")).lower().capitalize()
 
-        # upload filename to database without caption
-        if not request.form.get("caption"):
-            db.execute("INSERT INTO photo (user_id, filename, location) VALUES (:user_id, :filename, :location)",
-                       user_id=session["user_id"], filename=file.filename, location=location)
-
-        # upload filename with caption
-        else:
-            db.execute("INSERT INTO photo (user_id, filename, location, caption) VALUES (:user_id, :filename, :location, :caption)",
-                       user_id=session["user_id"], filename=file.filename, location=location, caption=request.form.get("caption"))
+        photo_in_db(file.filename, location, request.form.get("caption"))
 
         file.save(photo)
 

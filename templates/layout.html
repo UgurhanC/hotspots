@@ -24,19 +24,6 @@
 
     </head>
 
-<style type="text/css">
-body {background-color : black }
-.form-control {
-  width : 160px !important;
-  margin: auto !important;
-}
-.input-group, .form-control {
-    float: none !important;
-}
-.input-group-addon, .input-group-btn {
-display: initial !important;
-}
-</style>
 
     <body>
     <div class = "container">
@@ -66,15 +53,13 @@ display: initial !important;
         {% endif %}
 
         </div>
-    </nav>
+        </nav>
 
-            <main>
-                {% block main %}{% endblock %}
-            </main>
+        <main>
+            {% block main %}{% endblock %}
+        </main>
 
     </div>
-
-
     </body>
 
 </html>
