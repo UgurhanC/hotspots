@@ -232,12 +232,17 @@ def follow():
         # ensure location was submitted
         if followed_location == "no_location":
             return apology("location must be given")
+        elif followed_location == "already_following":
+            return apology("you already follow this location")
+
 
         return redirect(url_for("index"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("follow.html")
+        followed_locations = list_following(session["user_id"])
+        print(followed_locations)
+        return render_template("follow.html", followed_locations=followed_locations)
 
 
 @app.route("/react", methods=["GET", "POST"])

@@ -76,3 +76,8 @@ body {background-color : black }
 .input-group-addon, .input-group-btn {
 display: initial !important;
 }
+
+.space {
+  margin-top: 80px;
+}
+}
