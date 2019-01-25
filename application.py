@@ -450,6 +450,7 @@ def zien_comments():
 
 
 @app.route("/profile", methods=["GET", "POST"])
+@login_required
 def profile():
     if request.method == 'POST':
         print('test')
