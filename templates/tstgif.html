@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Giphy
+{% endblock %}
+
+{% block main %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/tst.js') }}"></script>
+<input type="button" value="comment" id='Showbutton'>
+<div id = "giphy">
+<div class="title-search-bar">
+            <div class="search-bar">
+                <input type="text" name="query" id="user-search" placeholder="Look up giphys"/>
+            </div>
+        </div>
+        <hr>
+        <div class="section">
+            <div id="results"></div>
+            <br>
+            <input type="submit" value="Submit" id = "comments">
+        </div>
+</div>
+
+{% endblock %}

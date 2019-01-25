@@ -12,11 +12,16 @@
             <section id="photos">
                 <img src={{ url_for('download_file', filename=photo[0] ) }} alt="Can't load picture" width="370" height="280" style=float:left>
             </section>
-            <button type="button" onclick="like_photo({{photo[1]}})">Like</button>
+            {{photo[2]}}
+            {% if 1 > 0 %}
+                <button id="likebutton" value="unliked" onclick="like_photo({{photo[1]}});change();"><img src="/hotspots/sprites/unliked.png" alt="Like"></button>
+            {% else %}
+                <button id="likebutton" value="liked" onclick="like_photo({{photo[1]}});change();"><img src="/hotspots/sprites/liked.png" alt="Unlike"></button>
+            {% endif %}
         </div>
         {% endfor %}
     {% else %}
-    You don't follow any location or the locations that you follow don't have photos uploaded.
+    <font color="white">You don't follow any location or the locations that you follow don't have photos uploaded.</font>
     {% endif %}
 
 

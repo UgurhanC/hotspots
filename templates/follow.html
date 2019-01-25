@@ -16,5 +16,17 @@
             <input autocomplete="off" autofocus class="form-control" name="location" placeholder="Location" type="text"/>
         </div>
         <input type="submit" value="Follow this location" class="btn btn-primary">
+        <div class="space"></div>
+        <fieldset>
+            <select name="unfollow location">
+                <option disabled selected value> unfollow location </option>
+                {% for location in followed_locations %}
+                    <option value="{{ location.location }}">{{ location.location }}</option>
+                {% endfor %}
+            </select>
+            <div class="form-group">
+                <button class="btn btn-default" type="Unfollow">Unfollow</button>
+            </div>
+        </fieldset>
     </form>
 {% endblock %}

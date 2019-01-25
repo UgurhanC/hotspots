@@ -6,6 +6,7 @@ from flask import redirect, render_template, request, session
 from functools import wraps
 from passlib.apps import custom_app_context as pwd_context
 
+
 db = SQL("sqlite:///hotspots.db")
 
 
@@ -143,6 +144,10 @@ def follow_location(location):
 
     place = location.lower().capitalize()
 
+    followed = db.execute("SELECT location FROM follows WHERE location=:location", location=place)
+    if len(followed) > 0:
+        return "already_following"
+
     # follow the location that was submitted
     db.execute("INSERT INTO follows (user_id, location) VALUES (:user_id, :location)",
                user_id=session["user_id"], location=place)
@@ -174,3 +179,7 @@ def photo_in_db(filename, location, caption):
         else:
             db.execute("INSERT INTO photo (user_id, filename, location, caption) VALUES (:user_id, :filename, :location, :caption)",
                        user_id=session["user_id"], filename=filename, location=location, caption=caption)
+
+
+def list_following(user_id):
+    return db.execute("SELECT location FROM follows WHERE user_id=:user_id GROUP BY location", user_id=user_id)
