@@ -8,3 +8,15 @@ function like_photo(id){
 
     });
 }
+
+
+
+function lcm(id){
+    $.ajax({
+      url: "/",
+      type: "POST",
+      data: {"id": id},
+      dataType: "text",
+
+    });
+}
