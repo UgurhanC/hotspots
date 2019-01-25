@@ -2,7 +2,7 @@ import csv
 import urllib.request
 
 from cs50 import SQL
-from flask import redirect, render_template, request, session
+from flask import redirect, render_template, request, session, jsonify, json
 from functools import wraps
 from passlib.apps import custom_app_context as pwd_context
 
@@ -144,7 +144,7 @@ def follow_location(location):
 
     place = location.lower().capitalize()
 
-    followed = db.execute("SELECT location FROM follows WHERE location=:location", location=place)
+    followed = db.execute("SELECT location FROM follows WHERE location=:location AND user_id=:user_id", location=place, user_id=session["user_id"])
     if len(followed) > 0:
         return "already_following"
 
@@ -183,3 +183,29 @@ def photo_in_db(filename, location, caption):
 
 def list_following(user_id):
     return db.execute("SELECT location FROM follows WHERE user_id=:user_id GROUP BY location", user_id=user_id)
+
+
+
+def unfollow_location(location):
+    if not location:
+        return "no_location"
+    db.execute("DELETE FROM follows WHERE user_id=:user_id AND location=:location", user_id=session["user_id"], location=location)
+
+def submit_comment(user_id, photo_id, cm_url):
+    db.execute("INSERT INTO comments (user_id, cm_url, photo_id) VALUES (:user_id, :cm_url, :photo_id)",
+                user_id=user_id, cm_url=cm_url, photo_id=photo_id)
+
+def show_comments(photo_id):
+    comments_dict = db.execute("SELECT cm_url FROM comments WHERE photo_id=:photo_id",
+                                photo_id=photo_id)
+    cmlist = []
+    for comment in comments_dict:
+        cmlist.append(comment['cm_url'])
+
+    #cmlist = jsonify(cmlist2)
+    #cmlist = json.dumps(cmlist2, separators=(',',':'))
+    #cmlist.response.headers['Content-Type'] = 'application/json'
+    #cmlist.status_code = 200
+    return cmlist
+
+
