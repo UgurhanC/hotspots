@@ -144,7 +144,7 @@ def follow_location(location):
 
     place = location.lower().capitalize()
 
-    followed = db.execute("SELECT location FROM follows WHERE location=:location", location=place)
+    followed = db.execute("SELECT location FROM follows WHERE location=:location AND user_id=:user_id", location=place, user_id=session["user_id"])
     if len(followed) > 0:
         return "already_following"
 
@@ -183,3 +183,9 @@ def photo_in_db(filename, location, caption):
 
 def list_following(user_id):
     return db.execute("SELECT location FROM follows WHERE user_id=:user_id GROUP BY location", user_id=user_id)
+
+
+def unfollow_location(location):
+    if not location:
+        return "no_location"
+    db.execute("DELETE FROM follows WHERE user_id=:user_id AND location=:location", user_id=session["user_id"], location=location)
