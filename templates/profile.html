@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    profile
+{% endblock %}
+
+{% block main %}
+<body>
+    <form action="{{ url_for('profile') }}" method="post">
+        <fieldset>
+            <h1><?php include 'username.php';?></h1>
+
+            <br>
+            <hr>
+            <br>
+
+            <h3></h3>settings</h3>
+        </fieldset>
+    </form>
+
+    <form action="{{ url_for('changepw') }}">
+        <fieldset>
+            <br>
+            <div class="form-group animate">
+                <button class="btn btn-default animate" type="submit">Change your Password</button>
+            </div>
+        </fieldset>
+    </form>
+    <br>
+    <form action="{{ url_for('changeun') }}">
+        <fieldset>
+            <div class="form-group animate">
+                <button class="btn btn-default animate" type="submit">Change your Username</button>
+            </div>
+        </fieldset>
+    </form>
+    <br>
+    <form action="{{ url_for('follow') }}">
+        <fieldset>
+            <div class="form-group animate">
+                <button class="btn btn-default animate" type="submit">(un) Follow Locations</button>
+            </div>
+        </fieldset>
+    </form>
+</body>
+{% endblock %}
