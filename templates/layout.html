@@ -18,6 +18,10 @@
         <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet"/>
         <script src="{{ url_for('static', filename='js/functions.js')}}"></script>
 
+        <!-- icons -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
         <title>Hotspots</title>
 
         <title>HotSpots: {% block title %}{% endblock %}</title>
@@ -105,7 +109,8 @@ input[type=submit] {
               <ul class="navbar-nav mr-auto navbar-right">
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('changepw') }}">Change password</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('changeun') }}">Change username</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Log Out</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}"><i class="material-icons">person</i></a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}"> <i class="material-icons">input</i></a></li>
               </ul>
             {% else %}
               <ul class="navbar-nav mr-auto navbar-right">

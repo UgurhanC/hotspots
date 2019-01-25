@@ -447,3 +447,16 @@ def zien_comments():
         for comment in comments_dict:
             cmlist.append(comment['cm_url'])
         return jsonify(cmlist)
+
+
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    if request.method == 'POST':
+        print('test')
+        usernamepie = db.execute("SELECT username FROM users WHERE user_id=:user_id", user_id=session["user_id"])
+        usernamepje = usernamepie[0]['username']
+        print(usernamepje)
+        return render_template('profile.html')
+
+    else:
+        return render_template('profile.html')
