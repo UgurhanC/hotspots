@@ -1,7 +1,6 @@
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory, jsonify
 from flask_session import Session
-from flask_cors import CORS
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 import os
@@ -13,9 +12,6 @@ import json
 #print(json.dumps(data, sort_keys=True, indent=4))
 # configure application
 app = Flask(__name__)
-CORS(app)
-
-
 
 
 # ensure responses aren't cached
@@ -271,7 +267,6 @@ def follow():
         elif followed_location == "already_following":
             return apology("you already follow this location")
 
-
         return redirect(url_for("index"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
@@ -279,12 +274,6 @@ def follow():
         followed_locations = list_following(session["user_id"])
         print(followed_locations)
         return render_template("follow.html", followed_locations=followed_locations)
-
-
-@app.route("/react", methods=["GET", "POST"])
-@login_required
-def react():
-    return apology("todo")
 
 
 @app.route("/upload", methods=["GET", "POST"])
@@ -320,7 +309,6 @@ def upload():
 
         return redirect(url_for("index"))
 
-
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template('upload.html')
@@ -336,10 +324,11 @@ def giphy():
     else:
         return render_template('giphy.html')
 
+
 @app.route("/indexgoed")
-#@login_required
+# @login_required
 def indexgoed():
-    df = pd.read_excel('worldcities.xlsx', sheet_name=0) # can also index sheet by name or fetch all sheets
+    df = pd.read_excel('worldcities.xlsx', sheet_name=0)  # can also index sheet by name or fetch all sheets
     mylist = df['city_ascii'].tolist()
     #mylist = json.dumps(mylist)
 
@@ -358,6 +347,20 @@ def comment():
         submit_comment(session["user_id"], photo_id, cm_url)
         return ""
 
+
+@app.route("/tstgif", methods=["GET", "POST"])
+def tstgif():
+    if request.method == 'POST':
+
+        url = request.get_json()
+        link = url['link']
+        print(link)
+        db.execute("INSERT INTO comment (c_url) VALUES (:link)", link=link)
+        return render_template('tstgif.html')
+
+    else:
+        print(request.endpoint)
+        return render_template('tstgif.html')
 
 
 @app.route('/uploads/<path:filename>')
