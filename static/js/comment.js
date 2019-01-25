@@ -15,28 +15,35 @@ $( document ).ready(function() {
 
     $("#search-txt").on("input", function() {
         console.log("change");
-        dra();
+        //dra();
     })
    $("button").on("click", function() {
        console.log("searching");
-       dra();
+       //dra();
    })
   $(document).on("click","#results img",function(){
 	$(this).css("border","5px solid green");
 	$("#results img").not($(this)).css("border","none");
-	link = this.src
+	cm_url = this.src
 	//console.log(link)
 
 });
+
+$('.myImg').click(function(){
+    imgid = this.id
+});
+
+
 $('#comments').click(function() {
-        console.log(link);
+        console.log(cm_url);
         $.ajax({
           type: "POST",
-          contentType: "application/json;charset=utf-8",
-          url: "tstgif",
-          traditional: "true",
-          data: JSON.stringify({link}),
-          dataType: "json"
+          //contentType: "application/json;charset=utf-8",
+          url: "/comment",
+          //traditional: "true",
+          //data: JSON.stringify({cm_url}),
+          data: {"cm_url": cm_url, "id": imgid},
+          dataType: "text",
           });
           $("#results img").not($(this)).css("border","none");
     });
@@ -92,8 +99,9 @@ $('#user-search').on("keyup", function () {
 
 $(document).on("keyup", "#user-search", function giphy() {
 
+  $('#user-search').keyup(delay(function (e) {
 
-  $("#results").html("");
+    $("#results").html("");
   // Beginning API call
   var queryURL = "https://api.giphy.com/v1/gifs/search?";
   var query;
@@ -183,4 +191,22 @@ $(document).on("keyup", "#user-search", function giphy() {
     }
   });
 
+  }, 500));
+
+
+
 });
+
+function delay(callback, ms) {
+  var timer = 0;
+  return function() {
+    var context = this, args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      callback.apply(context, args);
+    }, ms || 0);
+  };
+}
+
+
+
