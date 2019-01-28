@@ -24,7 +24,7 @@
 * Gebruikers kunnen reageren met gif's
 
 ## Verdeling
-Tjerk: liken van foto's, unliken van foto's, layout
-Kick: registeren, inloggen, wachtwoord vergeten, profiel, layout
-Ugurhan: indexpagina, commenten met gifs, wachtwoord veranderen, layout
-Barbara: uploaden, follow/unfollow, indexpagina, username veranderen, layout
+Tjerk: liken van foto's, unliken van foto's, layout<br/>
+Kick: registeren, inloggen, wachtwoord vergeten, profiel, layout<br/>
+Ugurhan: indexpagina, commenten met gifs, wachtwoord veranderen, layout<br/>
+Barbara: uploaden, follow/unfollow, indexpagina, username veranderen, layout<br/>
