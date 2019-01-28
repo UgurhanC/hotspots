@@ -452,8 +452,6 @@ def zien_comments():
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
-    print('test')
-    usernaampie = db.execute("SELECT username FROM users WHERE user_id=:user_id", user_id=session["user_id"])
-    usernaampje = usernaampie[0]['username']
-    print(usernaampje)
-    return render_template('profile.html', usernaampje=usernaampje)
+    naam = db.execute("SELECT name FROM users WHERE user_id=:user_id", user_id=session["user_id"])
+    naam = naam[0]['name']
+    return render_template('profile.html', usernaampje=naam)

@@ -227,10 +227,13 @@ $('#scomments').click(function(){
 
 </p>
 -->
-
-{% for photo in photos %}
-                <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left>
-{% endfor %}
+{% if photos|length > 0 %}
+    {% for photo in photos %}
+        <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left>
+    {% endfor %}
+{% else %}
+    <font color="white">You don't follow any location or the locations that you follow don't have photos uploaded.</font>
+{% endif %}
 
 
 
