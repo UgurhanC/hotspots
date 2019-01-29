@@ -59,9 +59,11 @@ def index():
         photos = []
         photo_dict = db.execute("SELECT filename, id, location FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
         for photo in photo_dict:
+            liked = is_liking_post(session["user_id"], photo["id"])
             likes = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo["id"])
             for like in likes:
-                photos.append([photo["filename"], photo["id"], photo["location"], like["COUNT (id)"]])
+                photos.append([photo["filename"], photo["id"], photo["location"], like["COUNT (id)"], liked])
+            print(photos)
 
 
         #print(comments)

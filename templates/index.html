@@ -111,7 +111,7 @@
 
 }
 .black{
-	color:black;
+	color:grey;
 	-webkit-text-stroke:4px rgba(190, 53, 48, 100)
 }
 .red {
@@ -126,7 +126,7 @@ window.onload = function()
 {
     function like_photo(id){
 
-}
+    }
 
 
 // Get the modal
@@ -158,14 +158,15 @@ $('.myImg').click(function(){
                 success: function(yayor){
                     console.log(yayor)
                     if (yayor.length > 0) {
-                        //document.getElementById("hart").classList.add('red');
-                        //document.getElementById("hart").classList.remove('black');
-                        document.getElementById("hart").style.color = "red"
+                        document.getElementById("hart").classList.add('red');
+                        document.getElementById("hart").classList.remove('black');
+                        //document.getElementById("hart").style.color = "red"
 
                     } else{
-                        //document.getElementById("hart").classList.add('black');
-                        //document.getElementById("hart").classList.remove('red');
-                        document.getElementById("hart").style.color = "black"
+                        document.getElementById("hart").classList.remove('red');
+                        document.getElementById("hart").classList.add('black');
+
+                        //document.getElementById("hart").style.color = "black"
                     }
                 }
             });
@@ -242,43 +243,9 @@ else
 */
 }
 </script>
-
-
-
-
-
-<!--
-<p style=float:center>
-    {% if photos|length > 0 %}
-        {% for photo in photos %}
-        <div class=animate>
-            <section id="photos">
-
-                <img src={{ url_for('download_file', filename=photo[0] ) }} alt="Can't load picture" width="370" height="280" style=float:left>
-
-            </section>
-            {{photo[2]}}
-            {% if 1 > 0 %}
-                <button id="likebutton" value="unliked" onclick="like_photo({{photo[1]}});change();"><img src="/hotspots/sprites/unliked.png" alt="Like"></button>
-            {% else %}
-                <button id="likebutton" value="liked" onclick="like_photo({{photo[1]}});change();"><img src="/hotspots/sprites/liked.png" alt="Unlike"></button>
-            {% endif %}
-        </div>
-        {% endfor %}
-    {% else %}
-    <font color="white">You don't follow any location or the locations that you follow don't have photos uploaded.</font>
-    {% endif %}
-
-
-</p>
--->
 {% if photos|length > 0 %}
     {% for photo in photos %}
-<<<<<<< HEAD
-        <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} alt={{ photo[2] }} width="370" height="280" style=float:left>
-=======
-                    <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left alt={{ photo[2] }}>
->>>>>>> 6b179fb0cae526e3b0ac96940e818535fb6a7087
+        <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left alt={{ photo[2] }}>
     {% endfor %}
 {% else %}
     <font color="white">You don't follow any location or the locations that you follow don't have photos uploaded.</font>
@@ -304,7 +271,7 @@ else
 
 
 
-<input type="button" value="comment" id='Showbutton'>
+<button type="button" value="comment" id='Showbutton'>Comment</button>
 <div id = "giphy">
 <div class="title-search-bar">
             <div class="search-bar">
@@ -323,12 +290,7 @@ else
 <button type="button" id="scomments">Show comments</button>
 <div class="right" id="cmbx">
 
-
-
-
 </div>
-
-
 
 </div>
 
