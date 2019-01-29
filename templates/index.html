@@ -18,9 +18,7 @@
     cursor: pointer;
     transition: 0.3s;
 }
-
 .myImg:hover {opacity: 0.7;}
-
 /* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */
@@ -35,7 +33,6 @@
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
 }
-
 /* Modal Content (Image) */
 .modal-content, #caption {
     margin: auto;
@@ -48,7 +45,6 @@
     display: inline-block;
     float:left;
 }
-
 /* Caption of Modal Image (Image Text) - Same Width as the Image */
 #caption {
     margin: auto;
@@ -60,8 +56,6 @@
     padding: 10px 0;
     height: 150px;
 }
-
-
 /* Add Animation - Zoom in the Modal */
 .modal-content, #caption {
     -webkit-animation-name: zoom;
@@ -69,17 +63,14 @@
     animation-name: zoom;
     animation-duration: 0.6s;
 }
-
 @-webkit-keyframes zoom {
     from {-webkit-transform:scale(0)}
     to {-webkit-transform:scale(1)}
 }
-
 @keyframes zoom {
     from {transform:scale(0)}
     to {transform:scale(1)}
 }
-
 /* The Close Button */
 .close {
     position: absolute;
@@ -90,14 +81,12 @@
     font-weight: bold;
     transition: 0.3s;
 }
-
 .close:hover,
 .close:focus {
     color: #bbb;
     text-decoration: none;
     cursor: pointer;
 }
-
 /* 100% Image Width on Smaller Screens */
 @media only screen and (max-width: 700px){
     .modal-content {
@@ -107,17 +96,11 @@
 .heart {
     font-size: 25px;
     color:red;
-
-
 }
 .black{
+    font-size: 25px;
 	color:grey;
-	-webkit-text-stroke:4px rgba(190, 53, 48, 100)
 }
-.red {
-    color:red;
-}
-
 </style>
 
 
@@ -125,14 +108,9 @@
 window.onload = function()
 {
     function like_photo(id){
-
-    }
-
-
+}
 // Get the modal
 var modal = document.getElementById('myModal');
-
-
 // Get the image and insert it inside the modal - use its "alt" text as a caption
 var img = $('.myImg');
 var modalImg = $("#img01");
@@ -140,7 +118,7 @@ var captionText = document.getElementById("caption");
 $('.myImg').click(function(){
     modal.style.display = "block";
     var newSrc = this.src;
-    imgid = this.id;
+    console.log(this.id)
     modalImg.attr('src', newSrc);
     captionText.innerHTML = this.alt;
     //imgid = this.id;
@@ -158,14 +136,12 @@ $('.myImg').click(function(){
                 success: function(yayor){
                     console.log(yayor)
                     if (yayor.length > 0) {
-                        document.getElementById("hart").classList.add('red');
+                        //document.getElementById("hart").classList.add('red');
                         document.getElementById("hart").classList.remove('black');
                         //document.getElementById("hart").style.color = "red"
-
                     } else{
-                        document.getElementById("hart").classList.remove('red');
+                        //document.getElementById("hart").classList.remove('red');
                         document.getElementById("hart").classList.add('black');
-
                         //document.getElementById("hart").style.color = "black"
                     }
                 }
@@ -179,60 +155,41 @@ $('.myImg').click(function(){
            // alert(thrownError);
           //},
                 success: function(cmlist){
-
                     for (i = 0; i < cmlist.length; i++) {
                     var elem = document.createElement("img");
                     elem.setAttribute("src", cmlist[i]);
                     //elem.src = cmlist[i];
-
                     document.getElementById("cmbx").appendChild(elem);
-
-
-
-
             }
             }
           });
-
         }
-
-
-
 });
 });
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
-
 // When the user clicks on <span> (x), close the modal
 span.onclick = function() {
   modal.style.display = "none";
 }
-
 $('#like').click(function(){
     //console.log(imgid)
-
 });
-
 $('#del').click(function(){
     $("#cmbx img").remove();
     $('#cmbx').hide()
     $('#giphy').hide()
-
 });
-
 $('#cmbx').hide()
-
 $('#scomments').click(function(){
     $('#cmbx').toggle()
 });
-
-    $(document).on('click','.heart', function(event) {
-    //alert(event.target);
-    //alert("klik")
-    $(this).toggleClass('red, black');
-    //alert($(event.target).classes())
+$(document).on('click','#hart', function(event) {
+//alert(event.target);
+//alert("klik")
+$(this).toggleClass('heart, black');
+//alert($(event.target).classes())
 });
-
 /*
  function toggle(){
 if(document.getElementById("hart").className == "heart")
@@ -243,9 +200,35 @@ else
 */
 }
 </script>
+
+
+
+
+
+<!--
+<p style=float:center>
+    {% if photos|length > 0 %}
+        {% for photo in photos %}
+        <div class=animate>
+            <section id="photos">
+                <img src={{ url_for('download_file', filename=photo[0] ) }} alt="Can't load picture" width="370" height="280" style=float:left>
+            </section>
+            {{photo[2]}}
+            {% if 1 > 0 %}
+                <button id="likebutton" value="unliked" onclick="like_photo({{photo[1]}});change();"><img src="/hotspots/sprites/unliked.png" alt="Like"></button>
+            {% else %}
+                <button id="likebutton" value="liked" onclick="like_photo({{photo[1]}});change();"><img src="/hotspots/sprites/liked.png" alt="Unlike"></button>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+    <font color="white">You don't follow any location or the locations that you follow don't have photos uploaded.</font>
+    {% endif %}
+</p>
+<--></-->
 {% if photos|length > 0 %}
     {% for photo in photos %}
-        <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left alt={{ photo[2] }}>
+                    <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left alt={{ photo[2] }}>
     {% endfor %}
 {% else %}
     <font color="white">You don't follow any location or the locations that you follow don't have photos uploaded.</font>
@@ -263,11 +246,8 @@ else
       <!-- Modal Caption (Image Text) -->
   <div id="caption"> captionText.innerHTML </div>
 </div>
-
-
   <!-- <button type="button" id="like" onclick="like_photo(imgid)">Like</button> -->
         <i class="heart fas fa-heart" id="hart" onclick="like_photo(imgid)" aria-hidden></i>
-
 
 
 
@@ -290,7 +270,12 @@ else
 <button type="button" id="scomments">Show comments</button>
 <div class="right" id="cmbx">
 
+
+
+
 </div>
+
+
 
 </div>
 
