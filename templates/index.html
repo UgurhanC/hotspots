@@ -7,6 +7,7 @@
 {% block main %}
 
 
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/comment.js') }}"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.6.3/js/all.js" integrity="sha384-EIHISlAOj4zgYieurP0SdoiBYfGJKkgWedPHH4jCzpCXLmzVsw1ouK59MuUtP4a1" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -177,8 +178,6 @@ $('.myImg').click(function(){
            // alert(thrownError);
           //},
                 success: function(cmlist){
-                    console.log(cmlist)
-                    //alert(cmlist);
 
                     for (i = 0; i < cmlist.length; i++) {
                     var elem = document.createElement("img");
@@ -258,7 +257,12 @@ else
                 <img src={{ url_for('download_file', filename=photo[0] ) }} alt="Can't load picture" width="370" height="280" style=float:left>
 
             </section>
-            <button type="button" onclick="like_photo({{photo[1]}})">Like</button>
+            {{photo[2]}}
+            {% if 1 > 0 %}
+                <button id="likebutton" value="unliked" onclick="like_photo({{photo[1]}});change();"><img src="/hotspots/sprites/unliked.png" alt="Like"></button>
+            {% else %}
+                <button id="likebutton" value="liked" onclick="like_photo({{photo[1]}});change();"><img src="/hotspots/sprites/liked.png" alt="Unlike"></button>
+            {% endif %}
         </div>
         {% endfor %}
     {% else %}
@@ -268,10 +272,14 @@ else
 
 </p>
 -->
+{% if photos|length > 0 %}
+    {% for photo in photos %}
+                    <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left alt={{ photo[2] }}>
+    {% endfor %}
+{% else %}
+    <font color="white">You don't follow any location or the locations that you follow don't have photos uploaded.</font>
+{% endif %}
 
-{% for photo in photos %}
-                <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left alt={{ photo[2] }}>
-{% endfor %}
 <div id="myModal" class="modal" >
 
   <!-- The Close Button -->

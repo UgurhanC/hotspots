@@ -59,10 +59,9 @@ def index():
         photos = []
         photo_dict = db.execute("SELECT filename, id, location FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
         for photo in photo_dict:
-            photos.append([photo["filename"], photo["id"], photo["location"]])
-        #print(photos)
-        #print(photos)
-
+            likes = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo["id"])
+            for like in likes:
+                photos.append([photo["filename"], photo["id"], photo["location"], like["COUNT (id)"]])
 
         #print(comments)
         #print(comments_dict)
@@ -256,21 +255,36 @@ def follow():
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == 'POST':
 
-        location = request.form.get("location")
-        followed_location = follow_location(location)
+        # if a user wants to follow a new location
+        if request.form.get("follow"):
 
-        # ensure location was submitted
-        if followed_location == "no_location":
-            return apology("location must be given")
-        elif followed_location == "already_following":
-            return apology("you already follow this location")
+            location = request.form.get("location")
+            # follow the location
+            followed_location = follow_location(location)
+
+            # ensure location was submitted
+            if followed_location == "no_location":
+                return apology("location must be given")
+            # check if user doesn't already follows the location
+            elif followed_location == "already_following":
+                return apology("you already follow this location")
+
+        # if the user wants to unfollow a location
+        else:
+
+            location = request.form.get("unfollow location")
+            # unfollow the location
+            unfollow_this_location = unfollow_location(location)
+
+            # ensure location to unfollow was submitted
+            if unfollow_this_location == "no_location":
+                return apology("no location selected")
 
         return redirect(url_for("index"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         followed_locations = list_following(session["user_id"])
-        print(followed_locations)
         return render_template("follow.html", followed_locations=followed_locations)
 
 
@@ -442,3 +456,11 @@ def zien_comments():
         for comment in comments_dict:
             cmlist.append(comment['cm_url'])
         return jsonify(cmlist)
+
+
+@app.route("/profile", methods=["GET", "POST"])
+@login_required
+def profile():
+    naam = db.execute("SELECT name FROM users WHERE user_id=:user_id", user_id=session["user_id"])
+    naam = naam[0]['name']
+    return render_template('profile.html', usernaampje=naam)

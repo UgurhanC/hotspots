@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    profile
+{% endblock %}
+
+{% block main %}
+<body>
+    <form action="{{ url_for('profile') }}" method="post">
+        <fieldset>
+            <h1><font color="grey">Hello {{ usernaampje }}</font></h1>
+            <br>
+            <hr>
+            <br>
+
+            <p><font color="grey"> SETTINGS</font></p>
+        </fieldset>
+    </form>
+
+    <form action="{{ url_for('changepw') }}">
+        <fieldset>
+            <br>
+            <div class="form-group animate">
+                <button class="btn btn-default animate" type="submit">Change your Password</button>
+            </div>
+        </fieldset>
+    </form>
+    <br>
+    <form action="{{ url_for('changeun') }}">
+        <fieldset>
+            <div class="form-group animate">
+                <button class="btn btn-default animate" type="submit">Change your Username</button>
+            </div>
+        </fieldset>
+    </form>
+</body>
+{% endblock %}

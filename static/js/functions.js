@@ -10,6 +10,13 @@ function like_photo(id){
 }
 
 
+function change(){
+    var elem = document.getElementById("likebutton");
+    if (elem.value=="liked") elem.value = "unliked";
+    else elem.value = "liked";
+}
+
+
 
 function lcm(id){
     $.ajax({
