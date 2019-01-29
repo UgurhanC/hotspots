@@ -57,9 +57,9 @@ def index():
 
         # make a list of photos of the followed locations and order by timestamp
         photos = []
-        photo_dict = db.execute("SELECT filename, id FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
+        photo_dict = db.execute("SELECT filename, id, location FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
         for photo in photo_dict:
-            photos.append([photo["filename"], photo["id"]])
+            photos.append([photo["filename"], photo["id"], photo["location"]])
         #print(photos)
         #print(photos)
 
@@ -87,15 +87,14 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    """Log user in."""
+    """
+    Log user in.
+    """
 
     # forget any user_id
     session.clear()
 
-    # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-
-        # get the username and password
         username = request.form.get("username")
         password = request.form.get("password")
 
@@ -113,7 +112,6 @@ def login():
 
         session["user_id"] = user_id
 
-        # redirect user to home page
         return redirect(url_for("index"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
@@ -372,13 +370,22 @@ def download_file(filename):
     return send_from_directory(photo_path, filename, as_attachment=True)
 
 
-@app.route("/like", methods=["POST"])
+@app.route("/like", methods=["POST", "GET"])
 @login_required
 def like():
     if request.method == "POST":
         photo_id = request.form['id']
         like_photo(session["user_id"], photo_id)
         return ""
+    else:
+        jalike = db.execute("SELECT * FROM liked WHERE id=:photo_id AND user_id=:user_id",
+                                photo_id=photo_id_comments, user_id=session["user_id"])
+        yayor = []
+        for x in jalike:
+            yayor.append(x['id'])
+        likedor = len(jalike)
+        print(likedor, jalike, yayor)
+        return jsonify(yayor)
 
 
 @app.route("/load_comments", methods=["POST", "GET"])
@@ -419,14 +426,16 @@ def load_comments():
 @login_required
 def zien_comments():
     #photo_id = request.form['photo_id']
-    #photo_id = None
+    #photo_id = 0
     if request.method == "POST":
         #photo_id = request.form['photo_id']
         #show_comments(photo_id)
         global photo_id_comments
         photo_id_comments = request.form['photo_id']
+        #print(photo_id)
         return photo_id_comments
     else:
+        #print(photo_id)
         comments_dict = db.execute("SELECT cm_url FROM comments WHERE photo_id=:photo_id",
                                 photo_id=photo_id_comments)
         cmlist = []
