@@ -111,11 +111,8 @@
 
 }
 .black{
+    font-size: 25px;
 	color:black;
-	-webkit-text-stroke:4px rgba(190, 53, 48, 100)
-}
-.red {
-    color:red;
 }
 
 </style>
@@ -140,7 +137,7 @@ var captionText = document.getElementById("caption");
 $('.myImg').click(function(){
     modal.style.display = "block";
     var newSrc = this.src;
-    imgid = this.id;
+    console.log(this.id)
     modalImg.attr('src', newSrc);
     captionText.innerHTML = this.alt;
     //imgid = this.id;
@@ -159,13 +156,14 @@ $('.myImg').click(function(){
                     console.log(yayor)
                     if (yayor.length > 0) {
                         //document.getElementById("hart").classList.add('red');
-                        //document.getElementById("hart").classList.remove('black');
-                        document.getElementById("hart").style.color = "red"
+                        document.getElementById("hart").classList.remove('black');
+                        //document.getElementById("hart").style.color = "red"
 
                     } else{
-                        //document.getElementById("hart").classList.add('black');
                         //document.getElementById("hart").classList.remove('red');
-                        document.getElementById("hart").style.color = "black"
+                        document.getElementById("hart").classList.add('black');
+
+                        //document.getElementById("hart").style.color = "black"
                     }
                 }
             });
@@ -225,11 +223,11 @@ $('#scomments').click(function(){
     $('#cmbx').toggle()
 });
 
-    $(document).on('click','.heart', function(event) {
-    //alert(event.target);
-    //alert("klik")
-    $(this).toggleClass('red, black');
-    //alert($(event.target).classes())
+$(document).on('click','#hart', function(event) {
+//alert(event.target);
+//alert("klik")
+$(this).toggleClass('heart, black');
+//alert($(event.target).classes())
 });
 
 /*
@@ -271,7 +269,7 @@ else
 
 
 </p>
--->
+<--></-->
 {% if photos|length > 0 %}
     {% for photo in photos %}
                     <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left alt={{ photo[2] }}>
