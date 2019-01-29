@@ -9,7 +9,8 @@
 
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/comment.js') }}"></script>
-
+<script defer src="https://use.fontawesome.com/releases/v5.6.3/js/all.js" integrity="sha384-EIHISlAOj4zgYieurP0SdoiBYfGJKkgWedPHH4jCzpCXLmzVsw1ouK59MuUtP4a1" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
  /* Style the Image Used to Trigger the Modal */
 .myImg {
@@ -36,7 +37,7 @@
 }
 
 /* Modal Content (Image) */
-.modal-content {
+.modal-content, #caption {
     margin: auto;
     display: inline-block;
     float:left;
@@ -59,6 +60,7 @@
     padding: 10px 0;
     height: 150px;
 }
+
 
 /* Add Animation - Zoom in the Modal */
 .modal-content, #caption {
@@ -102,12 +104,22 @@
         width: 100%;
     }
 }
+.heart {
+    font-size: 25px;
+    color:red;
+
+
+}
+.black{
+	color:black;
+	-webkit-text-stroke:4px rgba(190, 53, 48, 100)
+}
+.red {
+    color:red;
+}
 
 </style>
 
-
-
-<?php ttt = $_GET['cmlist']; ?>
 
 <script>
 window.onload = function()
@@ -141,6 +153,24 @@ $('.myImg').click(function(){
           success: function getcomments() {
               $.ajax({
                 type: "GET",
+                url: '/like',
+                data: {yayor: "yayor"},
+                success: function(yayor){
+                    console.log(yayor)
+                    if (yayor.length > 0) {
+                        //document.getElementById("hart").classList.add('red');
+                        //document.getElementById("hart").classList.remove('black');
+                        document.getElementById("hart").style.color = "red"
+
+                    } else{
+                        //document.getElementById("hart").classList.add('black');
+                        //document.getElementById("hart").classList.remove('red');
+                        document.getElementById("hart").style.color = "black"
+                    }
+                }
+            });
+              $.ajax({
+                type: "GET",
                 url: '/zien_comments',
                 data: {cmlist: "cmlist"},
                 //error: function (xhr, ajaxOptions, thrownError) {
@@ -157,20 +187,18 @@ $('.myImg').click(function(){
                     document.getElementById("cmbx").appendChild(elem);
 
 
-                    }
-
 
 
             }
-            });
-          }
+            }
+          });
 
-        });
+        }
 
 
 
 });
-
+});
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 
@@ -186,6 +214,8 @@ $('#like').click(function(){
 
 $('#del').click(function(){
     $("#cmbx img").remove();
+    $('#cmbx').hide()
+    $('#giphy').hide()
 
 });
 
@@ -195,6 +225,21 @@ $('#scomments').click(function(){
     $('#cmbx').toggle()
 });
 
+    $(document).on('click','.heart', function(event) {
+    //alert(event.target);
+    //alert("klik")
+    $(this).toggleClass('red, black');
+    //alert($(event.target).classes())
+});
+
+/*
+ function toggle(){
+if(document.getElementById("hart").className == "heart")
+   document.getElementById("hart").className = "black";
+else
+   document.getElementById("hart").className = "heart";
+}
+*/
 }
 </script>
 
@@ -229,13 +274,15 @@ $('#scomments').click(function(){
 -->
 {% if photos|length > 0 %}
     {% for photo in photos %}
+<<<<<<< HEAD
         <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} alt={{ photo[2] }} width="370" height="280" style=float:left>
+=======
+                    <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left alt={{ photo[2] }}>
+>>>>>>> 6b179fb0cae526e3b0ac96940e818535fb6a7087
     {% endfor %}
 {% else %}
     <font color="white">You don't follow any location or the locations that you follow don't have photos uploaded.</font>
 {% endif %}
-
-
 
 <div id="myModal" class="modal" >
 
@@ -246,9 +293,14 @@ $('#scomments').click(function(){
   <!-- Modal Content (The Image) -->
 <div class="left">
     <img class="modal-content" id="img01">
+      <!-- Modal Caption (Image Text) -->
+  <div id="caption"> captionText.innerHTML </div>
 </div>
 
-  <button type="button" id="like" onclick="like_photo(imgid)">Like</button>
+
+  <!-- <button type="button" id="like" onclick="like_photo(imgid)">Like</button> -->
+        <i class="heart fas fa-heart" id="hart" onclick="like_photo(imgid)" aria-hidden></i>
+
 
 
 
@@ -277,8 +329,7 @@ $('#scomments').click(function(){
 </div>
 
 
-  <!-- Modal Caption (Image Text) -->
-  <div id="caption"></div>
+
 </div>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
