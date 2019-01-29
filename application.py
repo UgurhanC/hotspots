@@ -364,3 +364,23 @@ def profile():
     naam = db.execute("SELECT name FROM users WHERE user_id=:user_id", user_id=session["user_id"])
     naam = naam[0]['name']
     return render_template('profile.html', naam=naam)
+
+
+@app.route("/search", methods=["GET", "POST"])
+@login_required
+def search():
+    if request.method == "POST":
+        location = str(request.form.get("location")).lower().capitalize()
+
+        # make a list of photos of the followed locations and order by timestamp
+        photos_list = []
+        photo_dict = db.execute(
+            "SELECT filename, id, location FROM photo WHERE location=:location ORDER BY timestamp DESC".format(search), location=location)
+        for photo in photo_dict:
+            likes = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo["id"])
+            for like in likes:
+                photos_list.append([photo["filename"], photo["id"], photo["location"], like["COUNT (id)"]])
+        return render_template("search.html", photos=photos_list)
+
+    else:
+        return render_template("search.html")
