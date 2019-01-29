@@ -37,15 +37,10 @@ db = SQL("sqlite:///hotspots.db")
 @login_required
 def index():
     if request.method == "POST":
-        #photo_id = request.form['id']
-        #cmlist = show_comments(photo_id)
-        #for cm in cmlist:
-         #   print(cm)
-
         return render_template("index.html")
 
     else:
-    # check which locations are followed
+        # check which locations are followed
         following = db.execute("SELECT location FROM follows WHERE user_id=:user_id", user_id=session["user_id"])
         follow_list = []
 
@@ -57,12 +52,12 @@ def index():
 
         # make a list of photos of the followed locations and order by timestamp
         photos = []
-        photo_dict = db.execute("SELECT filename, id, location FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
+        photo_dict = db.execute(
+            "SELECT filename, id, location FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
         for photo in photo_dict:
             likes = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo["id"])
             for like in likes:
                 photos.append([photo["filename"], photo["id"], photo["location"], like["COUNT (id)"]])
-
 
         return render_template("index.html", photos=photos)
 
@@ -327,7 +322,7 @@ def like():
         return ""
     else:
         jalike = db.execute("SELECT * FROM liked WHERE id=:photo_id AND user_id=:user_id",
-                                photo_id=photo_id_comments, user_id=session["user_id"])
+                            photo_id=photo_id_comments, user_id=session["user_id"])
         yayor = []
         for x in jalike:
             yayor.append(x['id'])
@@ -356,7 +351,7 @@ def zien_comments():
     else:
 
         comments_dict = db.execute("SELECT cm_url FROM comments WHERE photo_id=:photo_id",
-                                photo_id=photo_id_comments)
+                                   photo_id=photo_id_comments)
         cmlist = []
         for comment in comments_dict:
             cmlist.append(comment['cm_url'])
