@@ -202,10 +202,5 @@ def show_comments(photo_id):
     for comment in comments_dict:
         cmlist.append(comment['cm_url'])
 
-    #cmlist = jsonify(cmlist2)
-    #cmlist = json.dumps(cmlist2, separators=(',',':'))
-    #cmlist.response.headers['Content-Type'] = 'application/json'
-    #cmlist.status_code = 200
     return cmlist
-
 

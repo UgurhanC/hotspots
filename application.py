@@ -59,29 +59,9 @@ def index():
         photos = []
         photo_dict = db.execute("SELECT filename, id, location FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
         for photo in photo_dict:
-            liked = is_liking_post(session["user_id"], photo["id"])
             likes = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo["id"])
             for like in likes:
-                photos.append([photo["filename"], photo["id"], photo["location"], like["COUNT (id)"], liked])
-            print(photos)
-
-
-        #print(comments)
-        #print(comments_dict)
-        # cdict json dict error
-        '''
-        cdict = {}
-        for comment in comments_dict:
-            if not comment['photo_id'] in cdict:
-                cdict[comment['photo_id']] = []
-                cdict[comment['photo_id']].append((comment['cm_url'], comment['user_id']))
-            else:
-                cdict[comment['photo_id']].append((comment['cm_url'], comment['user_id']))
-        print(cdict)
-        #print(json.dumps(cdict,ensure_ascii=False))
-        cdict2 = json.dumps(cdict)
-        print(type(cdict2))
-        '''
+                photos.append([photo["filename"], photo["id"], photo["location"], like["COUNT (id)"]])
 
 
         return render_template("index.html", photos=photos)
@@ -116,7 +96,6 @@ def login():
 
         return redirect(url_for("index"))
 
-    # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
 
@@ -128,7 +107,6 @@ def logout():
     # forget any user_id
     session.clear()
 
-    # redirect user to login form
     return redirect(url_for("login"))
 
 
@@ -136,7 +114,6 @@ def logout():
 def forgot():
     """forgot password."""
 
-    # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
         username_confirmation = request.form.get("username2")
@@ -152,14 +129,13 @@ def forgot():
         elif forgot == "unvalid_username":
             return apology("Username doesn't exist")
         # check if the answer to the security question match
-        elif forgot == "no_security_question":
+        elif forgot == "no_match":
             return apology("Security answers don't match")
 
         session["user_id"] = forgot
 
         return redirect(url_for("changepw"))
 
-    # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("forgot.html")
 
@@ -168,7 +144,6 @@ def forgot():
 def register():
     """Register user."""
 
-    # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
         name = request.form.get("name")
@@ -196,7 +171,6 @@ def register():
         # redirect user to index page
         return redirect(url_for("index"))
 
-    # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("register.html")
 
@@ -206,7 +180,6 @@ def register():
 def changepw():
     """Change the password."""
 
-    # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
         new_password = request.form.get("new_password")
@@ -224,7 +197,6 @@ def changepw():
         # redirect user to home page
         return redirect(url_for("index"))
 
-    # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("changepw.html")
 
@@ -232,7 +204,6 @@ def changepw():
 @app.route("/changeun", methods=["GET", "POST"])
 @login_required
 def changeun():
-    # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
         new_username = request.form.get("new_username")
@@ -247,7 +218,6 @@ def changeun():
         # redirect user to home page
         return redirect(url_for("index"))
 
-    # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("changeun.html")
 
@@ -329,30 +299,6 @@ def upload():
         return render_template('upload.html')
 
 
-@app.route("/giphy", methods=["GET", "POST"])
-def giphy():
-    if request.method == 'POST':
-
-        q = request.form.get("q")
-        print(q)
-        return render_template('index.html')
-    else:
-        return render_template('giphy.html')
-
-
-@app.route("/indexgoed")
-# @login_required
-def indexgoed():
-    df = pd.read_excel('worldcities.xlsx', sheet_name=0)  # can also index sheet by name or fetch all sheets
-    mylist = df['city_ascii'].tolist()
-    #mylist = json.dumps(mylist)
-
-    if request.method == "POST":
-        return render_template("indexgoed.html")
-    else:
-       # print(citylist())
-        return render_template("indexgoed.html", mylist=mylist)
-
 @app.route("/comment", methods=["POST"])
 def comment():
     if request.method == 'POST':
@@ -361,21 +307,6 @@ def comment():
         photo_id = request.form['id']
         submit_comment(session["user_id"], photo_id, cm_url)
         return ""
-
-
-@app.route("/tstgif", methods=["GET", "POST"])
-def tstgif():
-    if request.method == 'POST':
-
-        url = request.get_json()
-        link = url['link']
-        print(link)
-        db.execute("INSERT INTO comment (c_url) VALUES (:link)", link=link)
-        return render_template('tstgif.html')
-
-    else:
-        print(request.endpoint)
-        return render_template('tstgif.html')
 
 
 @app.route('/uploads/<path:filename>')
@@ -401,7 +332,6 @@ def like():
         for x in jalike:
             yayor.append(x['id'])
         likedor = len(jalike)
-        print(likedor, jalike, yayor)
         return jsonify(yayor)
 
 
@@ -409,50 +339,22 @@ def like():
 @login_required
 def load_comments():
 
-    '''
-        photo_id = request.form['photo_id']
-        print(photo_id)
-        cmlist = show_comments(photo_id)
-        print(cmlist)
-        return cmlist
-    '''
-
     photo_id = request.form['photo_id']
     cmlist = show_comments(photo_id)
     print(cmlist, type(cmlist))
     return jsonify(cmlist)
 
 
-
-
-    '''
-            photo_id = request.form['id']
-            cmlist2 = show_comments(photo_id)
-            return jsonify(cmlist = cmlist2)
-        else:
-            photo_id = request.form['id']
-            cmlist2 = show_comments(photo_id)
-            return jsonify(cmlist = cmlist2)
-    '''
-
-
-
-
-
 @app.route("/zien_comments", methods=["POST", "GET"])
 @login_required
 def zien_comments():
-    #photo_id = request.form['photo_id']
-    #photo_id = 0
     if request.method == "POST":
-        #photo_id = request.form['photo_id']
-        #show_comments(photo_id)
         global photo_id_comments
         photo_id_comments = request.form['photo_id']
-        #print(photo_id)
+
         return photo_id_comments
     else:
-        #print(photo_id)
+
         comments_dict = db.execute("SELECT cm_url FROM comments WHERE photo_id=:photo_id",
                                 photo_id=photo_id_comments)
         cmlist = []
@@ -466,4 +368,4 @@ def zien_comments():
 def profile():
     naam = db.execute("SELECT name FROM users WHERE user_id=:user_id", user_id=session["user_id"])
     naam = naam[0]['name']
-    return render_template('profile.html', usernaampje=naam)
+    return render_template('profile.html', naam=naam)

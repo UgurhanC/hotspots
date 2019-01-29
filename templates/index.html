@@ -6,102 +6,9 @@
 
 {% block main %}
 
-
-
 <script type="text/javascript" src="{{ url_for('static', filename='js/comment.js') }}"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.6.3/js/all.js" integrity="sha384-EIHISlAOj4zgYieurP0SdoiBYfGJKkgWedPHH4jCzpCXLmzVsw1ouK59MuUtP4a1" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
- /* Style the Image Used to Trigger the Modal */
-.myImg {
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.myImg:hover {opacity: 0.7;}
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
-}
-/* Modal Content (Image) */
-.modal-content, #caption {
-    margin: auto;
-    display: inline-block;
-    float:left;
-    width: 80%;
-    max-width: 700px;
-}
-#cmbx{
-    display: inline-block;
-    float:left;
-}
-/* Caption of Modal Image (Image Text) - Same Width as the Image */
-#caption {
-    margin: auto;
-    display: block;
-    width: 80%;
-    max-width: 700px;
-    text-align: center;
-    color: #ccc;
-    padding: 10px 0;
-    height: 150px;
-}
-/* Add Animation - Zoom in the Modal */
-.modal-content, #caption {
-    -webkit-animation-name: zoom;
-    -webkit-animation-duration: 0.6s;
-    animation-name: zoom;
-    animation-duration: 0.6s;
-}
-@-webkit-keyframes zoom {
-    from {-webkit-transform:scale(0)}
-    to {-webkit-transform:scale(1)}
-}
-@keyframes zoom {
-    from {transform:scale(0)}
-    to {transform:scale(1)}
-}
-/* The Close Button */
-.close {
-    position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-.close:hover,
-.close:focus {
-    color: #bbb;
-    text-decoration: none;
-    cursor: pointer;
-}
-/* 100% Image Width on Smaller Screens */
-@media only screen and (max-width: 700px){
-    .modal-content {
-        width: 100%;
-    }
-}
-.heart {
-    font-size: 25px;
-    color:red;
-}
-.black{
-    font-size: 25px;
-	color:grey;
-}
-</style>
 
 
 <script>
@@ -201,34 +108,9 @@ else
 }
 </script>
 
-
-
-
-
-<!--
-<p style=float:center>
-    {% if photos|length > 0 %}
-        {% for photo in photos %}
-        <div class=animate>
-            <section id="photos">
-                <img src={{ url_for('download_file', filename=photo[0] ) }} alt="Can't load picture" width="370" height="280" style=float:left>
-            </section>
-            {{photo[2]}}
-            {% if 1 > 0 %}
-                <button id="likebutton" value="unliked" onclick="like_photo({{photo[1]}});change();"><img src="/hotspots/sprites/unliked.png" alt="Like"></button>
-            {% else %}
-                <button id="likebutton" value="liked" onclick="like_photo({{photo[1]}});change();"><img src="/hotspots/sprites/liked.png" alt="Unlike"></button>
-            {% endif %}
-        </div>
-        {% endfor %}
-    {% else %}
-    <font color="white">You don't follow any location or the locations that you follow don't have photos uploaded.</font>
-    {% endif %}
-</p>
-<--></-->
 {% if photos|length > 0 %}
     {% for photo in photos %}
-                    <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left alt={{ photo[2] }}>
+        <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left alt={{ photo[2] }}>
     {% endfor %}
 {% else %}
     <font color="white">You don't follow any location or the locations that you follow don't have photos uploaded.</font>
@@ -246,9 +128,7 @@ else
       <!-- Modal Caption (Image Text) -->
   <div id="caption"> captionText.innerHTML </div>
 </div>
-  <!-- <button type="button" id="like" onclick="like_photo(imgid)">Like</button> -->
-        <i class="heart fas fa-heart" id="hart" onclick="like_photo(imgid)" aria-hidden></i>
-
+    <i class="heart fas fa-heart" id="hart" onclick="like_photo(imgid)" aria-hidden></i>
 
 
 <button type="button" value="comment" id='Showbutton'>Comment</button>
@@ -258,7 +138,6 @@ else
                 <input type="text" name="query" id="user-search" placeholder="Look up giphys"/>
             </div>
         </div>
-        <hr>
         <div class="section">
             <div id="results"></div>
             <br>

@@ -6,6 +6,8 @@
 
 {% block main %}
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" >
+        <h2><font color="grey">Upload your picture</font></h2>
+        <br><br>
         <span class="btn btn-default btn-file">
             Browse <input type="file" name="image">
         </span>
