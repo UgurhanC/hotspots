@@ -15,11 +15,10 @@ $( document ).ready(function() {
 
     $("#search-txt").on("input", function() {
         console.log("change");
-        //dra();
+
     })
    $("button").on("click", function() {
        console.log("searching");
-       //dra();
    })
   $(document).on("click","#results img",function(){
 	$(this).css("border","5px solid green");
@@ -60,7 +59,6 @@ if ($('#element').is(':empty')){
 /*
 $("#Showbutton").click(function(e){
      $('#giphy').toggle('slow');//or just show instead of toggle
-
 }); */
 $('#Showbutton').on("click", function () {
         $('#giphy').slideToggle("slow", function () {
@@ -159,11 +157,10 @@ $(document).on("keyup", "#user-search", function giphy() {
       $(".gif").on("click", function() {
         var link = this.src
         console.log(link)
-
         if (!this.style.border) {
         this.style.border = "3px solid blue";
         }
-        else {
+        else {git ad
             this.style.border = '';
         }
       });

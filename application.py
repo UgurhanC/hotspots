@@ -57,6 +57,7 @@ def index():
 
         # make a list of photos of the followed locations and order by timestamp
         photos = []
+        likes = []
         photo_dict = db.execute("SELECT filename, id, location FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
         for photo in photo_dict:
             likes = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo["id"])
@@ -366,7 +367,7 @@ def tstgif():
 
         url = request.get_json()
         link = url['link']
-        print(link)
+        #print(link)
         db.execute("INSERT INTO comment (c_url) VALUES (:link)", link=link)
         return render_template('tstgif.html')
 
@@ -380,7 +381,7 @@ def download_file(filename):
     # go to the folder with the pictures so u can show the pictures on the index with html
     path = os.getcwd() + "/pics"
     photo_path = os.path.join(path)
-    print(photo_path)
+    #print(photo_path)
     return send_from_directory(photo_path, filename, as_attachment=True)
 
 
@@ -398,7 +399,7 @@ def like():
         for x in jalike:
             yayor.append(x['id'])
         likedor = len(jalike)
-        print(likedor, jalike, yayor)
+        #print(likedor, jalike, yayor)
         return jsonify(yayor)
 
 
@@ -416,7 +417,7 @@ def load_comments():
 
     photo_id = request.form['photo_id']
     cmlist = show_comments(photo_id)
-    print(cmlist, type(cmlist))
+    #print(cmlist, type(cmlist))
     return jsonify(cmlist)
 
 
@@ -464,3 +465,12 @@ def profile():
     naam = db.execute("SELECT name FROM users WHERE user_id=:user_id", user_id=session["user_id"])
     naam = naam[0]['name']
     return render_template('profile.html', usernaampje=naam)
+
+
+@app.route("/likey", methods=["GET", "POST"])
+def likey():
+    if request.method == "GET":
+        like = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo_id_comments)[0]['COUNT (id)']
+        #likes = [x for x in likes]
+        print(like)
+        return jsonify(like)
