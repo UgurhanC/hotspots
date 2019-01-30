@@ -1,4 +1,3 @@
-
 // Initial Search Buttons
 var topics = ["Internet Cats", "Meme's", "Typing", "Space", "Rick and Morty"];
 function addSearchBtns() {

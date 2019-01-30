@@ -40,25 +40,7 @@ def index():
         return render_template("index.html")
 
     else:
-        # check which locations are followed
-        following = db.execute("SELECT location FROM follows WHERE user_id=:user_id", user_id=session["user_id"])
-        follow_list = []
-
-        # make a list of the locations that are followed
-        for follow in following:
-            follow_list.append(follow["location"])
-
-        search = "(" + str(follow_list)[1:-1] + ")"
-
-        # make a list of photos of the followed locations and order by timestamp
-        photos = []
-        photo_dict = db.execute(
-            "SELECT filename, id, location FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
-        for photo in photo_dict:
-            likes = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo["id"])
-            for like in likes:
-                photos.append([photo["filename"], photo["id"], photo["location"], like["COUNT (id)"]])
-
+        photos = photo_list_locations()
         return render_template("index.html", photos=photos)
 
 
@@ -371,15 +353,8 @@ def profile():
 def search():
     if request.method == "POST":
         location = str(request.form.get("location")).lower().capitalize()
+        photos_list = search_location(location)
 
-        # make a list of photos of the followed locations and order by timestamp
-        photos_list = []
-        photo_dict = db.execute(
-            "SELECT filename, id, location FROM photo WHERE location=:location ORDER BY timestamp DESC".format(search), location=location)
-        for photo in photo_dict:
-            likes = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo["id"])
-            for like in likes:
-                photos_list.append([photo["filename"], photo["id"], photo["location"], like["COUNT (id)"]])
         return render_template("search.html", photos=photos_list)
 
     else:

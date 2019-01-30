@@ -15,6 +15,7 @@
 * Foto's liken: De gebruiker kan de foto liken. Wanneer de gebruiker een foto leuk vindt kan hij/zij erop klikken. De foto verschijnt dan groot in beeld met een like button
 * Foto's unliken: Wanneer de gebruiker een foto geliked heeft kan hij dit ongedaan maken door nogmaals op de like button te klikken.
 * Kunnen reageren op foto's met gifs: De gebruiker kan naast een foto liken ook reageren op de foto. Dit kan alleen d.m.v. gifs. Als de gebruiker wilt reageren verschijnt er een zoekmenu waarin de gebruiker kan typen wat voor soort gif hij/zij wilt. Bij het typen verschijnt er een assortiment aan gifs waaruit een keuze gemaakt kan worden.
+* Gebruikers kunnen locaties opzoeken en komen zo op een pagina waar alleen de foto's staan van de opgezochte locatie.
 
 ## Minimum viable product
 * Gebruikers kunnen inloggen/registeren
@@ -27,4 +28,16 @@
 Tjerk: liken van foto's, unliken van foto's, layout<br/>
 Kick: registeren, inloggen, wachtwoord vergeten, profiel, layout<br/>
 Ugurhan: indexpagina, commenten met gifs, wachtwoord veranderen, layout<br/>
-Barbara: uploaden, follow/unfollow, indexpagina, username veranderen, layout<br/>
+Barbara: uploaden, follow/unfollow, indexpagina, username veranderen, layout, search<br/>
+
+## repository
+* mapje pics: In het mapje pics staan alle foto's die de gebruikers hebben geüpload.
+* mapje static:
+    * mapje js: hierien staan de javascript scripts. In comment.js voor de comments, in password.js voor het zichtbaar maken van je password en in functions.js de rest.
+    * een styles.css waarin alle css code staat.
+* mapje templates: hierin staan alle html bestanden van de site.
+* application.py: hierin staan de routes van de site.
+* helpers.py: hierin hebben we aparte functies gemaakt om de application.py netjes te houden. Alle database acties zijn hierin neergezet.
+* hotspots.db: dit is de database die wij gebruiken om bij te houden welke steden gevolgd worden, welke gebruikers er zijn, welke foto's geliked worden en welke fot's geüpload worden.
+* mapje screenshots: hierin staan de screenshots van de website.
+* mapje zekerheid: hierin staan voor de zekerheid nog ons technisch voorstel en projectvoorstel.
