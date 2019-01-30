@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Index
+    Search
 {% endblock %}
 
 {% block main %}
@@ -14,8 +14,7 @@
 <script>
 window.onload = function()
 {
-function like_photo(id){
-
+    function like_photo(id){
 }
 // Get the modal
 var modal = document.getElementById('myModal');
@@ -23,15 +22,14 @@ var modal = document.getElementById('myModal');
 var img = $('.myImg');
 var modalImg = $("#img01");
 var captionText = document.getElementById("caption");
-var likeCount = document.getElementById("likecount");
 $('.myImg').click(function(){
     modal.style.display = "block";
     var newSrc = this.src;
-    //console.log(this.id)
+    console.log(this.id)
     modalImg.attr('src', newSrc);
     captionText.innerHTML = this.alt;
     //imgid = this.id;
-    //console.log(newSrc)
+    console.log(newSrc)
         $.ajax({
           url: "/zien_comments",
           type: "POST",
@@ -40,23 +38,10 @@ $('.myImg').click(function(){
           success: function getcomments() {
               $.ajax({
                 type: "GET",
-                url: '/likey',
-                data: {likes: "likes"},
-                success: function(likes){
-                console.log(likes)
-                likeCount.innerHTML = likes;
-
-                //document.getElementById("like").innerHTML = likes;
-                //document.querySelector('#likecount').innerHTML = 'Hello World!';
-
-                }
-              });
-
-              $.ajax({
-                type: "GET",
                 url: '/like',
                 data: {yayor: "yayor"},
                 success: function(yayor){
+                    console.log(yayor)
                     if (yayor.length > 0) {
                         //document.getElementById("hart").classList.add('red');
                         document.getElementById("hart").classList.remove('black');
@@ -66,14 +51,25 @@ $('.myImg').click(function(){
                         document.getElementById("hart").classList.add('black');
                         //document.getElementById("hart").style.color = "black"
                     }
-
-    //alert($(event.target).classes())
-
-
                 }
             });
-
-
+              $.ajax({
+                type: "GET",
+                url: '/zien_comments',
+                data: {cmlist: "cmlist"},
+                //error: function (xhr, ajaxOptions, thrownError) {
+            //alert(xhr.status);
+           // alert(thrownError);
+          //},
+                success: function(cmlist){
+                    for (i = 0; i < cmlist.length; i++) {
+                    var elem = document.createElement("img");
+                    elem.setAttribute("src", cmlist[i]);
+                    //elem.src = cmlist[i];
+                    document.getElementById("cmbx").appendChild(elem);
+            }
+            }
+          });
         }
 });
 });
@@ -86,15 +82,6 @@ span.onclick = function() {
 $('#like').click(function(){
     //console.log(imgid)
 });
-
-
-$('#hart').click(function(){
-    //console.log(imgid)
-    console.log("uhhhhhhhhh")
-
-});
-
-
 $('#del').click(function(){
     $("#cmbx img").remove();
     $('#cmbx').hide()
@@ -102,81 +89,12 @@ $('#del').click(function(){
 });
 $('#cmbx').hide()
 $('#scomments').click(function(){
-    $('#cmbx').toggle();
-    //$('#cmbox').html('')
-    $('#cmbx img').remove();
-    $("#giphy .section").hide();
-
-    console.log($('#cmbox').html())
-    $.ajax({
-        type: "GET",
-                url: '/zien_comments',
-                data: {cmlist: "cmlist"},
-                //error: function (xhr, ajaxOptions, thrownError) {
-            //alert(xhr.status);
-           // alert(thrownError);
-          //},
-                success: function(cmlist){
-
-                    for (i = 0; i < cmlist.length; i++) {
-                    var elem = document.createElement("img");
-                    elem.setAttribute("src", cmlist[i]);
-                    console.log(elem.src)
-                    //elem.src = cmlist[i];
-
-                    document.getElementById("cmbx").appendChild(elem);
-
-
-
-
-                }
-            }
-          });
+    $('#cmbx').toggle()
 });
-
-$('#comments').click(function(){
-    $('#cmbx').show('slow')
-    $('#cmbox').html('')
-    //$('#cmbox img').remove()
-    $('#giphy').hide('slow')
-    $('#cmbx img').remove()
-    $("#results img").remove();
-    $("#results div").remove();
-    console.log($('#cmbox').html())
-    $.ajax({
-                type: "GET",
-                url: '/zien_comments',
-                data: {cmlist: "cmlist"},
-                //error: function (xhr, ajaxOptions, thrownError) {
-            //alert(xhr.status);
-           // alert(thrownError);
-          //},
-                success: function(cmlist){
-
-                    for (i = 0; i < cmlist.length; i++) {
-                    var elem = document.createElement("img");
-                    elem.setAttribute("src", cmlist[i]);
-                    console.log(elem.src)
-                    //elem.src = cmlist[i];
-
-                    document.getElementById("cmbx").appendChild(elem);
-
-
-
-
-            }
-            }
-          });
-          document.getElementById('user-search').value = "";
-          console.log($('#cmbox').html())
-});
-
 $(document).on('click','#hart', function(event) {
 //alert(event.target);
 //alert("klik")
 $(this).toggleClass('heart, black');
-
-
 //alert($(event.target).classes())
 });
 /*
@@ -195,7 +113,7 @@ else
         <img class="myImg" id={{ photo[1] }} src={{ url_for('download_file', filename=photo[0] ) }} width="370" height="280" style=float:left alt={{ photo[2] }}>
     {% endfor %}
 {% else %}
-    <font color="white">You don't follow any location or the locations that you follow don't have photos uploaded.</font>
+    <font color="white">This search has no results.</font>
 {% endif %}
 
 <div id="myModal" class="modal" >
@@ -210,9 +128,7 @@ else
       <!-- Modal Caption (Image Text) -->
   <div id="caption"> captionText.innerHTML </div>
 </div>
-  <!-- <button type="button" id="like" onclick="like_photo(imgid)">Like</button> -->
-        <i class="heart fas fa-heart" id="hart" onclick="like_photo(imgid)" aria-hidden></i> <div id="likecount" class="heart"></div>
-
+    <i class="heart fas fa-heart" id="hart" onclick="like_photo(imgid)" aria-hidden></i>
 
 
 <button type="button" value="comment" id='Showbutton'>Comment</button>

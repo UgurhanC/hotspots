@@ -202,10 +202,38 @@ def show_comments(photo_id):
     for comment in comments_dict:
         cmlist.append(comment['cm_url'])
 
-    #cmlist = jsonify(cmlist2)
-    #cmlist = json.dumps(cmlist2, separators=(',',':'))
-    #cmlist.response.headers['Content-Type'] = 'application/json'
-    #cmlist.status_code = 200
     return cmlist
 
 
+def photo_list_locations():
+    # check which locations are followed
+    following = db.execute("SELECT location FROM follows WHERE user_id=:user_id", user_id=session["user_id"])
+    follow_list = []
+
+    # make a list of the locations that are followed
+    for follow in following:
+        follow_list.append(follow["location"])
+
+    search = "(" + str(follow_list)[1:-1] + ")"
+
+    # make a list of photos of the followed locations and order by timestamp
+    photos = []
+    photo_dict = db.execute(
+    "SELECT filename, id, location FROM photo WHERE location IN {} ORDER BY timestamp DESC".format(search))
+    for photo in photo_dict:
+        likes = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo["id"])
+        for like in likes:
+            photos.append([photo["filename"], photo["id"], photo["location"], like["COUNT (id)"]])
+
+    return photos
+
+def search_location(location):
+    # make a list of photos of the followed locations and order by timestamp
+    photos_list = []
+    photo_dict = db.execute(
+        "SELECT filename, id, location FROM photo WHERE location=:location ORDER BY timestamp DESC", location=location)
+    for photo in photo_dict:
+        likes = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo["id"])
+        for like in likes:
+            photos_list.append([photo["filename"], photo["id"], photo["location"], like["COUNT (id)"]])
+    return photos_list
