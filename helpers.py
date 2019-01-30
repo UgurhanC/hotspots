@@ -140,16 +140,14 @@ def like_photo(user_id, id):
     # elif is_liking_post(user_id, id) == False:
     else:
         db.execute("DELETE FROM liked WHERE user_id=:user_id and id=:id",
-            user_id=user_id, id=id)
+                   user_id=user_id, id=id)
         return False
+
 
 def is_liking_post(user_id, id):
     like_status = db.execute("SELECT user_id FROM liked WHERE id=:id and user_id=:user_id", id=id, user_id=user_id)
 
-    print("like_status:", like_status)
-
     return bool(like_status)
-
 
 
 def photo_in_db(filename, location, caption):
@@ -180,6 +178,7 @@ def submit_comment(user_id, photo_id, cm_url):
 
 
 def show_comments(photo_id):
+    # retrieve all comments
     comments_dict = db.execute("SELECT cm_url FROM comments WHERE photo_id=:photo_id",
                                photo_id=photo_id)
     cmlist = []
@@ -220,3 +219,7 @@ def search_location(location):
         for like in likes:
             photos_list.append([photo["filename"], photo["id"], photo["location"], like["COUNT (id)"]])
     return photos_list
+
+
+def likes_in_total(photo_id):
+    return db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo_id)[0]['COUNT (id)']

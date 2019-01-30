@@ -247,6 +247,7 @@ def comment():
         submit_comment(session["user_id"], photo_id, cm_url)
         return ""
 
+
 @app.route('/uploads/<path:filename>')
 def download_file(filename):
     # go to the folder with the pictures so u can show the pictures on the index with html
@@ -259,6 +260,7 @@ def download_file(filename):
 @app.route("/like", methods=["POST", "GET"])
 @login_required
 def like():
+    # check if photo is liked
     if request.method == "POST":
         photo_id = request.form['id']
         liked = like_photo(session["user_id"], photo_id)
@@ -266,19 +268,8 @@ def like():
         photo_id = request.args.get("id")
         liked = is_liking_post(session['user_id'], photo_id)
 
-    like = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo_id)[0]['COUNT (id)']
-
-    return jsonify({'is_liked':liked, 'n_likes':like})
-
-
-@app.route("/load_comments", methods=["POST", "GET"])
-@login_required
-def load_comments():
-
-    photo_id = request.form['photo_id']
-    cmlist = show_comments(photo_id)
-
-    return jsonify(cmlist)
+    total_likes = likes_in_total(photo_id)
+    return jsonify({'is_liked': liked, 'n_likes': total_likes})
 
 
 @app.route("/zien_comments", methods=["POST", "GET"])
@@ -290,12 +281,7 @@ def zien_comments():
 
         return photo_id_comments
     else:
-
-        comments_dict = db.execute("SELECT cm_url FROM comments WHERE photo_id=:photo_id",
-                                   photo_id=photo_id_comments)
-        cmlist = []
-        for comment in comments_dict:
-            cmlist.append(comment['cm_url'])
+        cmlist = show_comments(photo_id_comments)
         return jsonify(cmlist)
 
 
@@ -306,17 +292,6 @@ def profile():
     naam = naam[0]['name']
 
     return render_template('profile.html', naam=naam)
-
-
-@app.route("/likey", methods=["GET", "POST"])
-def likey():
-    if request.method == "GET":
-        like = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo_id_comments)[0]['COUNT (id)']
-        #likes = [x for x in likes]
-        print(like)
-        return jsonify(like)
-
-
 
 
 @app.route("/search", methods=["GET", "POST"])
