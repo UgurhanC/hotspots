@@ -9,7 +9,7 @@ import requests
 
 from helpers import *
 import json
-#print(json.dumps(data, sort_keys=True, indent=4))
+
 # configure application
 app = Flask(__name__)
 
@@ -40,17 +40,12 @@ def index():
         return render_template("index.html")
 
     else:
-
         photos = photo_list_locations()
         return render_template("index.html", photos=photos)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    """
-    Log user in.
-    """
-
     # forget any user_id
     session.clear()
 
@@ -60,13 +55,11 @@ def login():
 
         user_id = inlog(username, password)
 
-        # if username or password is missing return an apology
+        # if username or password is missing or incorrect return an apology
         if user_id == "no_username":
             return apology("username is missing")
         elif user_id == "no_password":
             return apology("password missing")
-
-        # check if the username exists and if password is correct
         elif not user_id:
             return apology("username doesn't match password")
 
@@ -80,8 +73,6 @@ def login():
 
 @app.route("/logout")
 def logout():
-    """Log user out."""
-
     # forget any user_id
     session.clear()
 
@@ -90,8 +81,6 @@ def logout():
 
 @app.route("/forgot", methods=["GET", "POST"])
 def forgot():
-    """forgot password."""
-
     if request.method == "POST":
 
         username_confirmation = request.form.get("username2")
@@ -99,14 +88,11 @@ def forgot():
 
         forgot = forgotpw(username_confirmation, answer_confirmation)
 
-        # check if all fields are completed
+        # check if all fields are completed and correct
         if forgot == "fields_missing":
             return apology("not all fields are completed")
-
-        # check if the username is valid
         elif forgot == "unvalid_username":
             return apology("Username doesn't exist")
-        # check if the answer to the security question match
         elif forgot == "no_match":
             return apology("Security answers don't match")
 
@@ -120,8 +106,6 @@ def forgot():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    """Register user."""
-
     if request.method == "POST":
 
         name = request.form.get("name")
@@ -132,21 +116,16 @@ def register():
 
         user = register_user(name, username, password, confirmation, answer)
 
-        # ensure are fields are submitted
+        # ensure are fields are submitted and correct
         if user == "not_all_fields":
             return apology("not all fields all completed")
-
-        # ensure password and confirmation are the same
         elif user == "no_match":
             return apology("passwords don't match")
-
-        # check if username doesn't already exists
         elif user == "username_exists":
             return apology("username already exists")
 
         session["user_id"] = user
 
-        # redirect user to index page
         return redirect(url_for("index"))
 
     else:
@@ -156,8 +135,6 @@ def register():
 @app.route("/changepw", methods=["GET", "POST"])
 @login_required
 def changepw():
-    """Change the password."""
-
     if request.method == "POST":
 
         new_password = request.form.get("new_password")
@@ -165,14 +142,12 @@ def changepw():
 
         change_pw = change_password(new_password, confirmation)
 
-        # ensure all fields are submitted
+        # ensure all fields are submitted and correct
         if change_pw == "missing_field":
             return apology("not all fields are completed")
-        # ensure passwords match
         elif change_pw == "no_match":
             return apology("passwords don't match")
 
-        # redirect user to home page
         return redirect(url_for("index"))
 
     else:
@@ -193,7 +168,6 @@ def changeun():
         elif change_un == "username_exists":
             return apology("username already exists")
 
-        # redirect user to home page
         return redirect(url_for("index"))
 
     else:
@@ -203,28 +177,21 @@ def changeun():
 @app.route("/follow", methods=["GET", "POST"])
 @login_required
 def follow():
-    # if user reached route via POST (as by submitting a form via POST)
     if request.method == 'POST':
 
-        # if a user wants to follow a new location
         if request.form.get("follow"):
 
             location = request.form.get("location")
-            # follow the location
             followed_location = follow_location(location)
 
-            # ensure location was submitted
+            # ensure a new location was submitted
             if followed_location == "no_location":
                 return apology("location must be given")
-            # check if user doesn't already follows the location
             elif followed_location == "already_following":
                 return apology("you already follow this location")
 
-        # if the user wants to unfollow a location
         else:
-
             location = request.form.get("unfollow location")
-            # unfollow the location
             unfollow_this_location = unfollow_location(location)
 
             # ensure location to unfollow was submitted
@@ -233,7 +200,6 @@ def follow():
 
         return redirect(url_for("index"))
 
-    # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         followed_locations = list_following(session["user_id"])
         return render_template("follow.html", followed_locations=followed_locations)
@@ -242,15 +208,11 @@ def follow():
 @app.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload():
-    # else if user reached route via GET (as by clicking a link or via redirect)
     if request.method == 'POST':
 
-        # go to the folder with the pictures
         folder = os.getcwd() + "/pics"
-
         allowed_extensions = ['.png', '.jpg', '.jpeg']
         file = request.files['image']
-
         extension = os.path.splitext(file.filename)[1]
 
         # check if an image is uploaded
@@ -272,7 +234,6 @@ def upload():
 
         return redirect(url_for("index"))
 
-    # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template('upload.html')
 
@@ -291,7 +252,7 @@ def download_file(filename):
     # go to the folder with the pictures so u can show the pictures on the index with html
     path = os.getcwd() + "/pics"
     photo_path = os.path.join(path)
-    #print(photo_path)
+
     return send_from_directory(photo_path, filename, as_attachment=True)
 
 
@@ -318,7 +279,7 @@ def load_comments():
 
     photo_id = request.form['photo_id']
     cmlist = show_comments(photo_id)
-    #print(cmlist, type(cmlist))
+
     return jsonify(cmlist)
 
 
