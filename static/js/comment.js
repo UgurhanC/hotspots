@@ -45,8 +45,6 @@ $('#user-search').on("keyup", function () {
 
 });
 
-
-
 // when user stops typing request the gifs
 $(document).on("keyup", "#user-search", function giphy() {
 
@@ -98,8 +96,6 @@ $(document).on("keyup", "#user-search", function giphy() {
 
   }, 500));
 
-
-
 });
 // timer between user-input and api request
 function delay(callback, ms) {
@@ -112,6 +108,4 @@ function delay(callback, ms) {
     }, ms || 0);
   };
 }
-
-
 

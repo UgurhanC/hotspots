@@ -1,11 +1,10 @@
 window.onload = function()
 {
-
 var modal = document.getElementById('myModal');
-
 var img = $('.myImg');
 var modalImg = $("#img01");
 var captionText = document.getElementById("caption");
+
 // display the images in a modal on click
 $('.myImg').click(function(){
     modal.style.display = "block";
