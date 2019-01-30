@@ -261,16 +261,14 @@ def download_file(filename):
 def like():
     if request.method == "POST":
         photo_id = request.form['id']
-        like_photo(session["user_id"], photo_id)
-        return ""
+        liked = like_photo(session["user_id"], photo_id)
     else:
-        jalike = db.execute("SELECT * FROM liked WHERE id=:photo_id AND user_id=:user_id",
-                            photo_id=photo_id_comments, user_id=session["user_id"])
-        yayor = []
-        for x in jalike:
-            yayor.append(x['id'])
-        likedor = len(jalike)
-        return jsonify(yayor)
+        photo_id = request.args.get("id")
+        liked = is_liking_post(session['user_id'], photo_id)
+
+    like = db.execute("SELECT COUNT (id) FROM liked WHERE id=:id", id=photo_id)[0]['COUNT (id)']
+
+    return jsonify({'is_liked':liked, 'n_likes':like})
 
 
 @app.route("/load_comments", methods=["POST", "GET"])

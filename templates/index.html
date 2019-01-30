@@ -14,16 +14,13 @@
 <script>
 window.onload = function()
 {
-function like_photo(id){
-
-}
 // Get the modal
 var modal = document.getElementById('myModal');
 // Get the image and insert it inside the modal - use its "alt" text as a caption
 var img = $('.myImg');
 var modalImg = $("#img01");
 var captionText = document.getElementById("caption");
-var likeCount = document.getElementById("likecount");
+//var likeCount = document.getElementById("likecount");
 $('.myImg').click(function(){
     modal.style.display = "block";
     var newSrc = this.src;
@@ -32,51 +29,58 @@ $('.myImg').click(function(){
     captionText.innerHTML = this.alt;
     //imgid = this.id;
     //console.log(newSrc)
-        $.ajax({
+    $.ajax({
           url: "/zien_comments",
           type: "POST",
           data: {"photo_id":this.id},
           dataType: "text",
-          success: function getcomments() {
-              $.ajax({
-                type: "GET",
-                url: '/likey',
-                data: {likes: "likes"},
-                success: function(likes){
-                console.log(likes)
-                likeCount.innerHTML = likes;
+    });
 
-                //document.getElementById("like").innerHTML = likes;
-                //document.querySelector('#likecount').innerHTML = 'Hello World!';
+    let request = $.ajax({
+      url: "/like",
+      type: "GET",
+      data: {"id": this.id},
+    });
+    request.done(update_photo_data);
 
-                }
-              });
-
-              $.ajax({
-                type: "GET",
-                url: '/like',
-                data: {yayor: "yayor"},
-                success: function(yayor){
-                    if (yayor.length > 0) {
-                        //document.getElementById("hart").classList.add('red');
-                        document.getElementById("hart").classList.remove('black');
-                        //document.getElementById("hart").style.color = "red"
-                    } else{
-                        //document.getElementById("hart").classList.remove('red');
-                        document.getElementById("hart").classList.add('black');
-                        //document.getElementById("hart").style.color = "black"
-                    }
-
-    //alert($(event.target).classes())
-
-
-                }
-            });
-
-
-        }
 });
-});
+    //           $.ajax({
+    //             type: "GET",
+    //             url: '/like',
+    //             data: {yayor: "yayor"},
+    //             success: function(yayor){
+    //                 if (yayor.length > 0) {
+    //                     //document.getElementById("hart").classList.add('red');
+    //                      document.getElementById("hart").classList.remove('black');
+    //                     // likeCount.innerHTML--
+    //                     //document.getElementById("hart").style.color = "red"
+    //                 } else{
+    //                     //document.getElementById("hart").classList.remove('red');
+    //                      document.getElementById("hart").classList.add('black');
+    //                     // likeCount.innerHTML++
+    //                     //document.getElementById("hart").style.color = "black"
+    //                 }
+
+    // //alert($(event.target).classes())
+
+
+    //             }
+    //         });
+            //   $.ajax({
+            //     type: "GET",
+            //     url: '/likey',
+            //     data: {likes: "likes"},
+            //     success: function(likes){
+            //     console.log(likes)
+            //     likeCount.innerHTML = likes;
+
+            //     //document.getElementById("like").innerHTML = likes;
+            //     //document.querySelector('#likecount').innerHTML = 'Hello World!';
+
+            //     }
+            //   });
+
+
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 // When the user clicks on <span> (x), close the modal
@@ -84,15 +88,11 @@ span.onclick = function() {
   modal.style.display = "none";
 }
 $('#like').click(function(){
-    //console.log(imgid)
+    console.log("likeclick")
 });
 
 
-$('#hart').click(function(){
-    //console.log(imgid)
-    console.log("uhhhhhhhhh")
 
-});
 
 
 $('#del').click(function(){
@@ -170,15 +170,92 @@ $('#comments').click(function(){
           document.getElementById('user-search').value = "";
           console.log($('#cmbox').html())
 });
+// $('.heart').click(function(){
+//     console.log("heart")
+//     $.ajax({
+//                 type: "GET",
+//                 url: '/like',
+//                 data: {yayor: "yayor"},
+//                 success: function(yayor){
+//                     if (yayor.length > 0) {
+//                         //document.getElementById("hart").classList.add('red');
+//                         document.getElementById("hart").classList.remove('black');
+//                         likeCount.innerHTML--
+//                         //document.getElementById("hart").style.color = "red"
+//                     } else{
+//                         //document.getElementById("hart").classList.remove('red');
+//                         document.getElementById("hart").classList.add('black');
+//                         likeCount.innerHTML++
+//                         //document.getElementById("hart").style.color = "black"
+//                     }
 
+//     //alert($(event.target).classes())
+
+
+//                 }
+//             });
+
+// });
+// $('.black').click(function(){
+//     console.log("blacclick")
+//     $.ajax({
+//                 type: "GET",
+//                 url: '/like',
+//                 data: {yayor: "yayor"},
+//                 success: function(yayor){
+//                     if (yayor.length > 0) {
+//                         //document.getElementById("hart").classList.add('red');
+//                         document.getElementById("hart").classList.remove('black');
+//                         //document.getElementById("hart").style.color = "red"
+//                     } else{
+//                         //document.getElementById("hart").classList.remove('red');
+//                         document.getElementById("hart").classList.add('black');
+//                         //document.getElementById("hart").style.color = "black"
+//                     }
+
+//     //alert($(event.target).classes())
+
+
+//                 }
+//             });
+
+// });
 $(document).on('click','#hart', function(event) {
-//alert(event.target);
-//alert("klik")
-$(this).toggleClass('heart, black');
 
+    //$(this).toggleClass('heart, black');
 
 //alert($(event.target).classes())
 });
+
+
+    // $.ajax({
+    //             type: "GET",
+    //             url: '/like',
+    //             data: {photo_id: } ,
+    //             success: function(yayor){
+    //                 if (yayor.length > 0) {
+    //                     console.log(yayor)
+    //                     console.log("should be deleted now!")
+    //                     //document.getElementById("hart").classList.add('red');
+    //                     // document.getElementById("hart").classList.remove('black');
+    //                     // likeCount.innerHTML--
+    //                     //document.getElementById("hart").style.color = "red"
+    //                 } else{
+    //                     console.log(yayor)
+    //                     console.log("should be inserted now!")
+    //                     //document.getElementById("hart").classList.remove('red');
+    //                     // document.getElementById("hart").classList.add('black');
+    //                     // likeCount.innerHTML++
+    //                     //document.getElementById("hart").style.color = "black"
+    //                 }
+
+    // //alert($(event.target).classes())
+
+
+    //             }
+    //         });
+//alert(event.target);
+//alert("klik")
 /*
  function toggle(){
 if(document.getElementById("hart").className == "heart")
