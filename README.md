@@ -30,7 +30,7 @@ Kick: registeren, inloggen, wachtwoord vergeten, profiel, layout<br/>
 Ugurhan: indexpagina, commenten met gifs, wachtwoord veranderen, layout<br/>
 Barbara: uploaden, follow/unfollow, indexpagina, username veranderen, layout, search<br/>
 
-## repository
+## Repository
 * mapje pics: In het mapje pics staan alle foto's die de gebruikers hebben geüpload.
 * mapje static:
     * mapje js: hierien staan de javascript scripts. In comment.js voor de comments, in password.js voor het zichtbaar maken van je password en in functions.js de rest.
@@ -41,3 +41,6 @@ Barbara: uploaden, follow/unfollow, indexpagina, username veranderen, layout, se
 * hotspots.db: dit is de database die wij gebruiken om bij te houden welke steden gevolgd worden, welke gebruikers er zijn, welke foto's geliked worden en welke fot's geüpload worden.
 * mapje screenshots: hierin staan de screenshots van de website.
 * mapje zekerheid: hierin staan voor de zekerheid nog ons technisch voorstel en projectvoorstel.
+
+## Video
+https://www.youtube.com/watch?v=22vEZkbDzew&feature=youtu.be
